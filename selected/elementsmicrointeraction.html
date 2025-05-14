@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Spectral - Interactive Effects</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- GSAP and anime.js for animations -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal: #00f5d4;
+            --violet: #6a00f4;
+            --black: #0a0a12;
+            --pink: #ff00ff;
+            --red: #ff003c;
+            --white: #e0fbfc;
+        }
+        
+        @font-face {
+            font-family: 'BauhausModern';
+            src: url('https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@4.5.8/files/space-grotesk-latin-700-normal.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'BauhausModern', sans-serif;
+            margin-bottom: 1.5rem;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(to right, var(--teal), var(--violet));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(0, 245, 212, 0.5);
+        }
+        
+        h2 {
+            font-size: 2rem;
+            color: var(--teal);
+            text-shadow: 0 0 10px rgba(0, 245, 212, 0.5);
+            margin-top: 4rem;
+        }
+        
+        .section {
+            margin-bottom: 5rem;
+            padding: 2rem;
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            border-radius: 8px;
+            background: rgba(10, 10, 18, 0.8);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);
+        }
+        
+        /* Neon button base styles */
+        .neon-btn {
+            position: relative;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 2px solid var(--teal);
+            color: var(--teal);
+            font-family: 'BauhausModern', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s;
+            margin: 1rem;
+            text-shadow: 0 0 5px var(--teal);
+            box-shadow: 0 0 10px rgba(0, 245, 212, 0.5), inset 0 0 10px rgba(0, 245, 212, 0.3);
+        }
+        
+        .neon-btn:hover {
+            background: rgba(0, 245, 212, 0.1);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.8), inset 0 0 15px rgba(0, 245, 212, 0.5);
+        }
+        
+        /* Canvas for ink splatter effect */
+        .ink-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        /* Kanji seals */
+        .kanji-seal {
+            position: absolute;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        
+        /* Text link with unraveling effect */
+        .unravel-link {
+            position: relative;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            overflow: hidden;
+            display: inline-block;
+        }
+        
+        .unravel-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--red);
+            transform-origin: right;
+            transform: scaleX(1);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .unravel-link:hover::after {
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .unravel-link .thread {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            background: var(--red);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Radial menu */
+        .radial-menu-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .radial-menu {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 2px solid var(--violet);
+            box-shadow: 0 0 15px rgba(106, 0, 244, 0.5), inset 0 0 10px rgba(106, 0, 244, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .menu-item {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--black);
+            border: 2px solid var(--teal);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--teal);
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0, 245, 212, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .menu-item:hover {
+            background: rgba(0, 245, 212, 0.2);
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.8);
+        }
+        
+        /* Occult Mode */
+        .occult-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--black);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+        
+        .occult-canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 101;
+        }
+        
+        .occult-instructions {
+            position: relative;
+            z-index: 102;
+            color: var(--red);
+            text-align: center;
+            font-family: 'BauhausModern', sans-serif;
+            text-shadow: 0 0 10px var(--red);
+        }
+        
+        .occult-seals {
+            position: relative;
+            z-index: 103;
+            width: 300px;
+            height: 300px;
+            border: 3px solid var(--red);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.8);
+            margin: 2rem 0;
+        }
+
+        /* Scanlines effect */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 10, 18, 0) 50%,
+                rgba(10, 10, 18, 0.1) 50%
+            );
+            background-size: 100% 4px;
+            opacity: 0.2;
+        }
+        
+        /* Glitch effect for text */
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: var(--teal);
+        }
+        
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--red);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim-1 5s linear infinite alternate-reverse;
+        }
+        
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--violet);
+            clip: rect(24px, 450px, 100px, 0);
+            animation: glitch-anim-2 5s linear infinite alternate-reverse;
+        }
+        
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(25px, 9999px, 39px, 0); }
+            10% { clip: rect(55px, 9999px, 29px, 0); }
+            20% { clip: rect(70px, 9999px, 59px, 0); }
+            30% { clip: rect(23px, 9999px, 41px, 0); }
+            40% { clip: rect(12px, 9999px, 18px, 0); }
+            50% { clip: rect(44px, 9999px, 27px, 0); }
+            60% { clip: rect(67px, 9999px, 34px, 0); }
+            70% { clip: rect(81px, 9999px, 92px, 0); }
+            80% { clip: rect(33px, 9999px, 54px, 0); }
+            90% { clip: rect(19px, 9999px, 66px, 0); }
+            100% { clip: rect(72px, 9999px, 48px, 0); }
+        }
+        
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(72px, 9999px, 36px, 0); }
+            10% { clip: rect(23px, 9999px, 79px, 0); }
+            20% { clip: rect(54px, 9999px, 18px, 0); }
+            30% { clip: rect(67px, 9999px, 92px, 0); }
+            40% { clip: rect(21px, 9999px, 34px, 0); }
+            50% { clip: rect(45px, 9999px, 62px, 0); }
+            60% { clip: rect(36px, 9999px, 41px, 0); }
+            70% { clip: rect(58px, 9999px, 24px, 0); }
+            80% { clip: rect(82px, 9999px, 47px, 0); }
+            90% { clip: rect(31px, 9999px, 76px, 0); }
+            100% { clip: rect(43px, 9999px, 65px, 0); }
+        }
+
+        /* Japanese characters for effects */
+        .jp-text {
+            font-family: 'BauhausModern', sans-serif;
+            color: var(--teal);
+            opacity: 0.8;
+            letter-spacing: 5px;
+            text-shadow: 0 0 8px var(--teal);
+            margin: 1rem 0;
+        }
+        .home-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    overflow: visible;
+    padding: 10px 25px;
+    background-color: rgba(10, 10, 18, 0.7);
+    transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+    transform: translateY(-3px);
+}
+
+.home-btn .btn-text {
+    position: relative;
+    z-index: 2;
+}
+
+.btn-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 245, 212, 0.1);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.home-btn:hover .btn-glow {
+    opacity: 1;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 245, 212, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 245, 212, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 245, 212, 0); }
+}
+    </style>
+</head>
+<body>
+    <button class="btn home-btn" onclick="window.location.href='/'">
+        <span class="btn-text glitch" data-text="HOME">HOME</span>
+        <div class="btn-glow"></div>
+    </button>
+
+    <div class="scanlines"></div>
+    
+    <div class="container">
+        <header class="my-10 text-center">
+            <h1 class="glitch" data-text="NEON SPECTRAL">NEON SPECTRAL</h1>
+            <div class="jp-text text-xl">サイバーファントム</div>
+            <p class="text-xl opacity-70 mt-4">Interactive Effects Demonstration</p>
+        </header>
+
+        <!-- Ink Splatter Effect -->
+        <section class="section" id="ink-splatter-section">
+            <h2>Ink Splatter Effect</h2>
+            <p class="mb-6">Hover over the buttons below to see the ink splatter effect.</p>
+            
+            <div class="flex flex-wrap justify-center">
+                <button class="neon-btn" data-ink-color="#00f5d4">ACTIVATE</button>
+                <button class="neon-btn" data-ink-color="#ff00ff">CONNECT</button>
+                <button class="neon-btn" data-ink-color="#ff003c">DEFEND</button>
+            </div>
+            <canvas class="ink-canvas" id="ink-canvas"></canvas>
+        </section>
+
+        <!-- Kanji Seals -->
+        <section class="section" id="kanji-seals-section">
+            <h2>Kanji Seals</h2>
+            <p class="mb-6">Click the buttons to see kanji seals burn away.</p>
+            
+            <div class="flex flex-wrap justify-center">
+                <button class="neon-btn kanji-btn" data-kanji="守">PROTECTION</button>
+                <button class="neon-btn kanji-btn" data-kanji="霊">SPIRIT</button>
+                <button class="neon-btn kanji-btn" data-kanji="力">POWER</button>
+            </div>
+            <div id="kanji-container" class="relative w-full h-20"></div>
+        </section>
+
+        <!-- Unraveling Text Links -->
+        <section class="section" id="unravel-section">
+            <h2>Unraveling Text Links</h2>
+            <p class="mb-6">Hover over these links to see the thread unravel effect.</p>
+            
+            <div class="flex flex-wrap justify-center space-x-8">
+                <a href="#" class="unravel-link">DIGITAL SOULS</a>
+                <a href="#" class="unravel-link">NEON DISTRICTS</a>
+                <a href="#" class="unravel-link">PHANTOM DATA</a>
+            </div>
+        </section>
+
+        <!-- Radial Menu -->
+        <section class="section" id="radial-menu-section">
+            <h2>Radial Menu</h2>
+            <p class="mb-6">Move your mouse to see the radial menu orbit around your cursor.</p>
+            
+            <div class="radial-menu-container" id="radial-menu-container">
+                <div class="radial-menu" id="radial-menu">
+                    <div class="menu-item" data-index="0">01</div>
+                    <div class="menu-item" data-index="1">02</div>
+                    <div class="menu-item" data-index="2">03</div>
+                    <div class="menu-item" data-index="3">04</div>
+                    <div class="menu-item" data-index="4">05</div>
+                </div>
+            </div>
+            <p class="text-center mt-6 text-sm opacity-50">Try clicking on a menu item!</p>
+        </section>
+
+        <!-- Occult Mode Easter Egg -->
+        <section class="section" id="occult-section">
+            <h2>Occult Mode Easter Egg</h2>
+            <p class="mb-6">Enter the Konami Code to activate Occult Mode.</p>
+            <div class="jp-text text-center">↑ ↑ ↓ ↓ ← → ← → B A</div>
+            <p class="text-center mt-6">Current status: <span id="konami-status" class="text-red-500">INACTIVE</span></p>
+        </section>
+
+        <!-- Occult Mode Interface (Hidden by default) -->
+        <div class="occult-mode" id="occult-mode">
+            <canvas class="occult-canvas" id="occult-canvas"></canvas>
+            <div class="occult-instructions">
+                <h2>EXORCISM MODE ACTIVATED</h2>
+                <p>Draw sealing patterns with your mouse to banish the spirits</p>
+                <p>Speak the words of power to complete the ritual</p>
+            </div>
+            <div class="occult-seals" id="occult-seals"></div>
+            <button class="neon-btn mt-8" id="exit-occult">ESCAPE</button>
+        </div>
+    </div>
+
+    <script>
+        // Ink Splatter Effect
+        (function() {
+            const canvas = document.getElementById('ink-canvas');
+            const ctx = canvas.getContext('2d');
+            const buttons = document.querySelectorAll('.neon-btn');
+            
+            // Set canvas to full size
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = document.documentElement.scrollHeight;
+            }
+            
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            
+            // Ink splatter class
+            class InkSplatter {
+                constructor(x, y, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.color = color;
+                    this.particles = [];
+                    this.createParticles();
+                }
+                
+                createParticles() {
+                    const particleCount = Math.floor(Math.random() * 10) + 15;
+                    
+                    for (let i = 0; i < particleCount; i++) {
+                        this.particles.push({
+                            x: this.x,
+                            y: this.y,
+                            radius: Math.random() * 5 + 2,
+                            angle: Math.random() * Math.PI * 2,
+                            velocity: Math.random() * 5 + 1,
+                            opacity: 1,
+                            decay: Math.random() * 0.02 + 0.01
+                        });
+                    }
+                }
+                
+                update() {
+                    this.particles.forEach(p => {
+                        p.x += Math.cos(p.angle) * p.velocity;
+                        p.y += Math.sin(p.angle) * p.velocity;
+                        p.opacity -= p.decay;
+                    });
+                    
+                    this.particles = this.particles.filter(p => p.opacity > 0);
+                    return this.particles.length > 0;
+                }
+                
+                draw() {
+                    this.particles.forEach(p => {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = `${this.color}${Math.floor(p.opacity * 255).toString(16).padStart(2, '0')}`;
+                        ctx.fill();
+                    });
+                }
+            }
+            
+            let splatters = [];
+            let animationFrameId = null;
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                splatters = splatters.filter(splatter => splatter.update());
+                splatters.forEach(splatter => splatter.draw());
+                
+                if (splatters.length > 0) {
+                    animationFrameId = requestAnimationFrame(animate);
+                } else {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
+            }
+            
+            // Add event listeners to buttons
+            buttons.forEach(button => {
+                if (!button.hasAttribute('data-ink-color')) return;
+                
+                button.addEventListener('mousemove', (e) => {
+                    const rect = button.getBoundingClientRect();
+                    const x = e.clientX;
+                    const y = e.clientY + window.scrollY;
+                    
+                    if (Math.random() > 0.8) {
+                        const inkColor = button.getAttribute('data-ink-color') || '#00f5d4';
+                        splatters.push(new InkSplatter(x, y, inkColor));
+                        
+                        if (!animationFrameId) {
+                            animationFrameId = requestAnimationFrame(animate);
+                        }
+                        
+                        // Play sound effect
+                        const audio = new Audio('https://cdn.jsdelivr.net/gh/kenney/kenney-assets@main/audio/ui/switch3.ogg');
+                        audio.volume = 0.2;
+                        audio.play().catch(e => console.log('Audio play prevented:', e));
+                    }
+                });
+            });
+        })();
+        
+        // Kanji Seals Effect
+        (function() {
+            const kanjiButtons = document.querySelectorAll('.kanji-btn');
+            const kanjiContainer = document.getElementById('kanji-container');
+            
+            kanjiButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const kanji = button.getAttribute('data-kanji');
+                    const rect = button.getBoundingClientRect();
+                    
+                    // Create kanji seal element
+                    const seal = document.createElement('div');
+                    seal.className = 'kanji-seal';
+                    seal.textContent = kanji;
+                    seal.style.fontSize = '4rem';
+                    seal.style.color = '#ff003c';
+                    seal.style.textShadow = '0 0 10px #ff003c';
+                    seal.style.top = `${rect.top + rect.height/2}px`;
+                    seal.style.left = `${rect.left + rect.width/2}px`;
+                    
+                    kanjiContainer.appendChild(seal);
+                    
+                    // Animate with GSAP
+                    gsap.to(seal, {
+                        duration: 0.5,
+                        opacity: 1,
+                        scale: 2,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            // Burn away effect
+                            gsap.to(seal, {
+                                duration: 2,
+                                opacity: 0,
+                                scale: 0.5,
+                                y: -100,
+                                ease: "power3.in",
+                                onComplete: () => {
+                                    seal.remove();
+                                }
+                            });
+                            
+                            // Create particle effect
+                            const particleCount = 20;
+                            for (let i = 0; i < particleCount; i++) {
+                                const particle = document.createElement('div');
+                                particle.className = 'kanji-seal';
+                                particle.style.width = '5px';
+                                particle.style.height = '5px';
+                                particle.style.borderRadius = '50%';
+                                particle.style.backgroundColor = '#ff003c';
+                                particle.style.boxShadow = '0 0 5px #ff003c';
+                                particle.style.top = `${rect.top + rect.height/2}px`;
+                                particle.style.left = `${rect.left + rect.width/2}px`;
+                                
+                                kanjiContainer.appendChild(particle);
+                                
+                                // Random trajectory
+                                const angle = Math.random() * Math.PI * 2;
+                                const distance = Math.random() * 200 + 50;
+                                
+                                gsap.to(particle, {
+                                    duration: Math.random() * 1.5 + 0.5,
+                                    x: Math.cos(angle) * distance,
+                                    y: Math.sin(angle) * distance,
+                                    opacity: 0,
+                                    ease: "power2.out",
+                                    onComplete: () => {
+                                        particle.remove();
+                                    }
+                                });
+                            }
+                        }
+                    });
+                });
+            });
+        })();
+        
+        // Unraveling Text Links
+        (function() {
+            const unravelLinks = document.querySelectorAll('.unravel-link');
+            
+            unravelLinks.forEach(link => {
+                link.addEventListener('mouseenter', (e) => {
+                    const rect = link.getBoundingClientRect();
+                    const threadCount = Math.floor(rect.width / 3);
+                    
+                    // Clear any existing threads
+                    const existingThreads = link.querySelectorAll('.thread');
+                    existingThreads.forEach(thread => thread.remove());
+                    
+                    // Create new threads
+                    for (let i = 0; i < threadCount; i++) {
+                        const thread = document.createElement('div');
+                        thread.className = 'thread';
+                        link.appendChild(thread);
+                        
+                        // Position at the bottom of the link
+                        thread.style.bottom = '0';
+                        thread.style.left = `${i * 3}px`;
+                        
+                        // Animate with anime.js
+                        anime({
+                            targets: thread,
+                            opacity: [0, 1],
+                            width: 3,
+                            height: 3,
+                            translateY: anime.stagger(4, {from: 'center', direction: 'reverse'}),
+                            translateX: anime.random(-50, 50),
+                            delay: anime.stagger(10, {from: 'center'}),
+                            duration: 1000,
+                            easing: 'easeOutQuad'
+                        });
+                    }
+                });
+                
+                link.addEventListener('mouseleave', () => {
+                    const threads = link.querySelectorAll('.thread');
+                    
+                    anime({
+                        targets: threads,
+                        opacity: 0,
+                        translateY: anime.stagger(10, {from: 'center'}),
+                        translateX: anime.random(-100, 100),
+                        duration: 800,
+                        easing: 'easeOutQuad',
+                        complete: () => {
+                            threads.forEach(thread => thread.remove());
+                        }
+                    });
+                });
+            });
+        })();
+        
+        // Radial Menu
+        (function() {
+            const radialMenu = document.getElementById('radial-menu');
+            const menuContainer = document.getElementById('radial-menu-container');
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            let lastMouseX = 0;
+            let lastMouseY = 0;
+            let rotationAngle = 0;
+            let isAnimating = false;
+            
+            // Position menu items in a circle
+            menuItems.forEach((item, index) => {
+                const angle = (index / menuItems.length) * Math.PI * 2;
+                const radius = 130; // Distance from center
+                
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                
+                gsap.set(item, {
+                    x: x,
+                    y: y,
+                    rotation: 0
+                });
+                
+                // Add click handler
+                item.addEventListener('click', () => {
+                    const index = parseInt(item.getAttribute('data-index'));
+                    
+                    // Show selection animation
+                    gsap.timeline()
+                        .to(item, {
+                            scale: 1.3,
+                            boxShadow: '0 0 30px rgba(0, 245, 212, 0.8)',
+                            duration: 0.3,
+                            ease: 'power2.out'
+                        })
+                        .to(item, {
+                            scale: 1,
+                            boxShadow: '0 0 10px rgba(0, 245, 212, 0.5)',
+                            duration: 0.3,
+                            ease: 'power2.in'
+                        });
+                });
+            });
+            
+            // Update menu position with mouse
+            menuContainer.addEventListener('mousemove', (e) => {
+                if (isAnimating) return;
+                
+                const rect = menuContainer.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const mouseX = e.clientX - centerX;
+                const mouseY = e.clientY - centerY;
+                
+                // Calculate rotation based on mouse movement
+                rotationAngle += (mouseX - lastMouseX) * 0.005;
+                
+                lastMouseX = mouseX;
+                lastMouseY = mouseY;
+                
+                // Apply rotation to menu
+                gsap.to(radialMenu, {
+                    rotation: rotationAngle * (180 / Math.PI),
+                    duration: 0.5,
+                    ease: 'power1.out'
+                });
+                
+                // Counter-rotate menu items to keep them upright
+                menuItems.forEach(item => {
+                    gsap.to(item, {
+                        rotation: -rotationAngle * (180 / Math.PI),
+                        duration: 0.5,
+                        ease: 'power1.out'
+                    });
+                });
+                
+                // Subtle movement towards cursor
+                gsap.to(radialMenu, {
+                    x: mouseX * 0.1,
+                    y: mouseY * 0.1,
+                    duration: 1,
+                    ease: 'power2.out'
+                });
+            });
+        })();
+        
+        // Occult Mode Easter Egg (Konami Code)
+        (function() {
+            const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+            let konamiIndex = 0;
+            const konamiStatus = document.getElementById('konami-status');
+            const occultMode = document.getElementById('occult-mode');
+            const occultCanvas = document.getElementById('occult-canvas');
+            const occultSeals = document.getElementById('occult-seals');
+            const exitOccult = document.getElementById('exit-occult');
+            
+            document.addEventListener('keydown', (e) => {
+                // Check if the pressed key matches the next key in the sequence
+                const requiredKey = konamiCode[konamiIndex].toLowerCase();
+                const pressedKey = e.key.toLowerCase();
+                
+                if (pressedKey === requiredKey) {
+                    konamiIndex++;
+                    
+                    // Update status text
+                    konamiStatus.textContent = `${konamiIndex} / ${konamiCode.length}`;
+                    
+                    // Flash the status text
+                    gsap.fromTo(konamiStatus, 
+                        { color: '#ff003c', textShadow: '0 0 10px #ff003c' },
+                        { color: '#ff00ff', textShadow: '0 0 10px #ff00ff', duration: 0.5, yoyo: true, repeat: 1 }
+                    );
+                    
+                    // If the complete code is entered
+                    if (konamiIndex === konamiCode.length) {
+                        activateOccultMode();
+                        konamiIndex = 0;
+                    }
+                } else {
+                    // Reset sequence on incorrect key
+                    konamiIndex = 0;
+                    konamiStatus.textContent = 'INACTIVE';
+                }
+            });
+            
+            // Occult Mode Activation
+            function activateOccultMode() {
+                konamiStatus.textContent = 'ACTIVATED';
+                konamiStatus.style.color = '#ff003c';
+                
+                // Show occult mode interface with animation
+                gsap.set(occultMode, { display: 'flex', opacity: 0 });
+                gsap.to(occultMode, { opacity: 1, duration: 1.5, ease: 'power2.inOut' });
+                
+                // Setup canvas
+                const ctx = occultCanvas.getContext('2d');
+                occultCanvas.width = window.innerWidth;
+                occultCanvas.height = window.innerHeight;
+                
+                // Drawing variables
+                let isDrawing = false;
+                let lastX = 0;
+                let lastY = 0;
+                const drawnPoints = [];
+                
+                // Setup drawing event listeners
+                occultCanvas.addEventListener('mousedown', startDrawing);
+                occultCanvas.addEventListener('mousemove', draw);
+                occultCanvas.addEventListener('mouseup', stopDrawing);
+                occultCanvas.addEventListener('mouseout', stopDrawing);
+                
+                function startDrawing(e) {
+                    isDrawing = true;
+                    [lastX, lastY] = [e.clientX, e.clientY];
+                    drawnPoints.push([lastX, lastY]);
+                }
+                
+                function draw(e) {
+                    if (!isDrawing) return;
+                    
+                    const x = e.clientX;
+                    const y = e.clientY;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(x, y);
+                    ctx.strokeStyle = '#ff003c';
+                    ctx.lineWidth = 3;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#ff003c';
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+                    
+                    // Add glowing particles
+                    for (let i = 0; i < 3; i++) {
+                        const particle = document.createElement('div');
+                        particle.style.position = 'absolute';
+                        particle.style.width = '8px';
+                        particle.style.height = '8px';
+                        particle.style.borderRadius = '50%';
+                        particle.style.backgroundColor = '#ff003c';
+                        particle.style.boxShadow = '0 0 8px #ff003c';
+                        particle.style.top = `${y + (Math.random() * 20 - 10)}px`;
+                        particle.style.left = `${x + (Math.random() * 20 - 10)}px`;
+                        particle.style.pointerEvents = 'none';
+                        
+                        document.body.appendChild(particle);
+                        
+                        gsap.to(particle, {
+                            opacity: 0,
+                            scale: 0,
+                            duration: 1,
+                            onComplete: () => particle.remove()
+                        });
+                    }
+                    
+                    [lastX, lastY] = [x, y];
+                    drawnPoints.push([x, y]);
+                }
+                
+                function stopDrawing() {
+                    if (!isDrawing) return;
+                    isDrawing = false;
+                    
+                    // Check if drawing completes a pattern
+                    if (drawnPoints.length > 10) {
+                        checkPattern();
+                    }
+                    
+                    drawnPoints.length = 0;
+                }
+                
+                function checkPattern() {
+                    // Simple pattern detection logic
+                    const patternEffect = Math.random() > 0.5 ? 'success' : 'partial';
+                    
+                    if (patternEffect === 'success') {
+                        // Success effect
+                        gsap.to(occultSeals, {
+                            borderColor: '#00f5d4',
+                            boxShadow: '0 0 30px rgba(0, 245, 212, 0.8)',
+                            duration: 1
+                        });
+                        
+                        // Add success particle effect
+                        for (let i = 0; i < 50; i++) {
+                            createParticle('#00f5d4');
+                        }
+                    } else {
+                        // Partial effect
+                        gsap.to(occultSeals, {
+                            borderColor: '#ff00ff',
+                            boxShadow: '0 0 20px rgba(255, 0, 255, 0.6)',
+                            duration: 0.5,
+                            yoyo: true,
+                            repeat: 1
+                        });
+                        
+                        // Add partial effect particles
+                        for (let i = 0; i < 20; i++) {
+                            createParticle('#ff00ff');
+                        }
+                    }
+                    
+                    // Clear canvas after a delay
+                    setTimeout(() => {
+                        ctx.clearRect(0, 0, occultCanvas.width, occultCanvas.height);
+                    }, 1000);
+                }
+                
+                function createParticle(color) {
+                    const rect = occultSeals.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    
+                    const particle = document.createElement('div');
+                    particle.style.position = 'absolute';
+                    particle.style.width = '6px';
+                    particle.style.height = '6px';
+                    particle.style.borderRadius = '50%';
+                    particle.style.backgroundColor = color;
+                    particle.style.boxShadow = `0 0 8px ${color}`;
+                    particle.style.top = `${centerY}px`;
+                    particle.style.left = `${centerX}px`;
+                    particle.style.pointerEvents = 'none';
+                    
+                    document.body.appendChild(particle);
+                    
+                    // Random trajectory
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 150 + 50;
+                    
+                    gsap.to(particle, {
+                        x: Math.cos(angle) * distance,
+                        y: Math.sin(angle) * distance,
+                        opacity: 0,
+                        duration: Math.random() * 1.5 + 0.5,
+                        ease: "power2.out",
+                        onComplete: () => particle.remove()
+                    });
+                }
+                
+                // Voice recognition setup
+                if ('webkitSpeechRecognition' in window) {
+                    const SpeechRecognition = window.webkitSpeechRecognition;
+                    const recognition = new SpeechRecognition();
+                    
+                    recognition.continuous = true;
+                    recognition.lang = 'ja-JP';
+                    recognition.start();
+                    
+                    recognition.onresult = function(event) {
+                        const transcript = event.results[event.results.length - 1][0].transcript;
+                        console.log('Voice recognized:', transcript);
+                        
+                        // Simple "spell" detection
+                        if (transcript.includes('臨') || transcript.includes('兵') || transcript.includes('闘')) {
+                            // Kuji-kiri detected
+                            gsap.to(occultSeals, {
+                                borderColor: '#00f5d4',
+                                boxShadow: '0 0 30px rgba(0, 245, 212, 0.8)',
+                                duration: 1
+                            });
+                            
+                            // Add success particle effect
+                            for (let i = 0; i < 50; i++) {
+                                createParticle('#00f5d4');
+                            }
+                        }
+                    };
+                    
+                    // Stop recognition when exiting
+                    exitOccult.addEventListener('click', () => {
+                        recognition.stop();
+                    });
+                }
+                
+                // Exit button
+                exitOccult.addEventListener('click', () => {
+                    gsap.to(occultMode, {
+                        opacity: 0,
+                        duration: 1,
+                        ease: 'power2.inOut',
+                        onComplete: () => {
+                            occultMode.style.display = 'none';
+                            occultCanvas.getContext('2d').clearRect(0, 0, occultCanvas.width, occultCanvas.height);
+                            konamiStatus.textContent = 'INACTIVE';
+                            gsap.to(konamiStatus, { color: '#ff003c', textShadow: 'none' });
+                        }
+                    });
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

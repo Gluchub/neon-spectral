@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Spectral - A Cyber-Phantom Interactive Experience</title>
+    <meta name="description" content="An immersive cyber-phantom experience combining Ghostwire: Tokyo and Cyberpunk 2077 aesthetics with interactive WebGL elements, neon visuals, and paranormal interactions.">
+    
+    <!-- Tailwind CSS from jsDelivr -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Three.js for 3D environment -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    
+    <!-- GSAP for animations -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.9.1/dist/gsap.min.js"></script>
+    
+    <!-- Anime.js for UI animations -->
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    
+    <!-- Other dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/stats.js@0.17.0/build/stats.min.js"></script>
+    
+    <!-- Custom fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --electric-teal: #00f5d4;
+            --deep-violet: #6a00f4;
+            --void-black: #0a0a12;
+            --neon-pink: #ff00ff;
+            --corrupted-red: #ff003c;
+            --holographic-white: #e0fbfc;
+        }
+        
+        @font-face {
+            font-family: 'Bauhaus Modern';
+            src: url('https://cdn.jsdelivr.net/npm/@fontsource/bauhaus-93@4.5.0/files/bauhaus-93-400.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--void-black);
+            color: var(--holographic-white);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="%2300f5d4" fill-opacity="0.5"/></svg>') 12 12, auto;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Bauhaus Modern', sans-serif;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .glitch {
+            position: relative;
+            color: var(--holographic-white);
+            text-shadow: 
+                0.05em 0 0 rgba(255, 0, 255, 0.75),
+                -0.025em -0.05em 0 rgba(0, 255, 212, 0.75),
+                0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+            animation: glitch 500ms infinite;
+        }
+        
+        @keyframes glitch {
+            0% {
+                text-shadow: 
+                    0.05em 0 0 rgba(255, 0, 255, 0.75),
+                    -0.025em -0.05em 0 rgba(0, 255, 212, 0.75),
+                    0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+            }
+            14% {
+                text-shadow: 
+                    0.05em 0 0 rgba(255, 0, 255, 0.75),
+                    -0.025em -0.05em 0 rgba(0, 255, 212, 0.75),
+                    0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+            }
+            15% {
+                text-shadow: 
+                    -0.05em -0.025em 0 rgba(255, 0, 255, 0.75),
+                    0.025em 0.025em 0 rgba(0, 255, 212, 0.75),
+                    -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+            }
+            49% {
+                text-shadow: 
+                    -0.05em -0.025em 0 rgba(255, 0, 255, 0.75),
+                    0.025em 0.025em 0 rgba(0, 255, 212, 0.75),
+                    -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+            }
+            50% {
+                text-shadow: 
+                    0.025em 0.05em 0 rgba(255, 0, 255, 0.75),
+                    0.05em 0 0 rgba(0, 255, 212, 0.75),
+                    0 -0.05em 0 rgba(0, 0, 255, 0.75);
+            }
+            99% {
+                text-shadow: 
+                    0.025em 0.05em 0 rgba(255, 0, 255, 0.75),
+                    0.05em 0 0 rgba(0, 255, 212, 0.75),
+                    0 -0.05em 0 rgba(0, 0, 255, 0.75);
+            }
+            100% {
+                text-shadow: 
+                    -0.025em 0 0 rgba(255, 0, 255, 0.75),
+                    -0.025em -0.025em 0 rgba(0, 255, 212, 0.75),
+                    -0.025em -0.05em 0 rgba(0, 0, 255, 0.75);
+            }
+        }
+        
+        .neon-button {
+            position: relative;
+            display: inline-block;
+            padding: 12px 24px;
+            color: var(--electric-teal);
+            background: transparent;
+            border: 1px solid var(--electric-teal);
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            font-size: 14px;
+            overflow: hidden;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 1;
+        }
+        
+        .neon-button:hover {
+            color: var(--void-black);
+            background: var(--electric-teal);
+            box-shadow: 0 0 10px var(--electric-teal),
+                        0 0 20px var(--electric-teal),
+                        0 0 40px var(--electric-teal);
+        }
+        
+        .neon-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 212, 0.4), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        .neon-button:hover::before {
+            left: 100%;
+        }
+        
+        .custom-scrollbar {
+            position: fixed;
+            top: 0;
+            right: 10px;
+            width: 6px;
+            height: 0;
+            background: linear-gradient(to bottom, var(--electric-teal), var(--deep-violet));
+            z-index: 100;
+            border-radius: 3px;
+            box-shadow: 0 0 10px var(--electric-teal),
+                        0 0 20px var(--neon-pink);
+        }
+        
+        .radial-menu {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .parallax {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.1s ease-out;
+        }
+        
+        .section-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        
+        .section-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .kanji-container {
+            position: absolute;
+            font-size: 6rem;
+            opacity: 0.2;
+            color: var(--neon-pink);
+            user-select: none;
+            pointer-events: none;
+        }
+        
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 10, 18, 0) 50%,
+                rgba(10, 10, 18, 0.02) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 2000;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+        
+        .text-link {
+            position: relative;
+            color: var(--electric-teal);
+            text-decoration: none;
+            padding-bottom: 2px;
+            overflow: hidden;
+        }
+        
+        .text-link:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 1px;
+            width: 100%;
+            background: var(--corrupted-red);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .text-link:hover:after {
+            transform: translateX(0);
+        }
+        
+        .torii-gate {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        
+        .particle-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--void-black);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 1s ease-out;
+        }
+        
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+        
+        .loading-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--electric-teal), var(--neon-pink));
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <h1 class="glitch text-4xl mb-4">INITIALIZING NEON SPECTRAL</h1>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+        <p class="mt-4 text-sm text-gray-400">CONNECTING TO THE SPIRIT REALM</p>
+    </div>
+
+    <!-- WebGL Canvas Container -->
+    <canvas id="webglCanvas"></canvas>
+    
+    <!-- Particle System -->
+    <div class="particle-container" id="particleContainer"></div>
+    
+    <!-- Scanline Effect -->
+    <div class="scanline"></div>
+    
+    <!-- Custom Scrollbar -->
+    <div class="custom-scrollbar" id="customScrollbar"></div>
+    
+    <!-- Radial Menu -->
+    <div class="radial-menu" id="radialMenu"></div>
+
+    <!-- Main Content -->
+    <div class="relative z-10">
+        <!-- Header/Navigation -->
+        <header class="fixed top-0 left-0 w-full z-50 bg-opacity-20 backdrop-filter backdrop-blur-lg border-b border-opacity-20" style="border-color: var(--electric-teal);">
+            <div class="container mx-auto px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <h1 class="text-2xl font-bold glitch">NEON SPECTRAL</h1>
+                    </div>
+                    <nav class="hidden md:flex space-x-8">
+                        <a href="#experience" class="text-link">EXPERIENCE</a>
+                        <a href="#phantom" class="text-link">PHANTOM</a>
+                        <a href="#cyber" class="text-link">CYBER</a>
+                        <a href="#contact" class="text-link">CONTACT</a>
+                    </nav>
+                    <button class="md:hidden" id="mobileMenuButton">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Menu -->
+        <div class="fixed inset-0 bg-opacity-90 z-40 hidden" style="background-color: var(--void-black);" id="mobileMenu">
+            <div class="flex flex-col items-center justify-center h-full space-y-8">
+                <a href="#experience" class="text-link text-2xl">EXPERIENCE</a>
+                <a href="#phantom" class="text-link text-2xl">PHANTOM</a>
+                <a href="#cyber" class="text-link text-2xl">CYBER</a>
+                <a href="#contact" class="text-link text-2xl">CONTACT</a>
+                <button class="neon-button mt-8" id="closeMobileMenu">CLOSE</button>
+            </div>
+        </div>
+
+        <!-- Hero Section with WebGL Environment -->
+        <section class="parallax h-screen flex items-center justify-center relative" id="hero">
+            <div class="parallax-layer" data-depth="0.1">
+                <img src="https://static1.dualshockersimages.com/wordpress/wp-content/uploads/2023/04/ghostwire-tokyo-streets.jpg" alt="Tokyo Streets" class="absolute object-cover w-full h-full opacity-40">
+            </div>
+            <div class="parallax-layer" data-depth="0.3">
+                <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+            </div>
+            <div class="parallax-layer" data-depth="0.5" style="z-index: 1;">
+                <div class="container mx-auto px-6 text-center">
+                    <h1 class="text-6xl md:text-8xl font-bold glitch mb-6">NEON SPECTRAL</h1>
+                    <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto">A CYBER-PHANTOM INTERACTIVE EXPERIENCE</p>
+                    <button class="neon-button" id="enterExperienceBtn">ENTER THE VOID</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section class="py-24 relative" id="experience">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="section-reveal">
+                        <h2 class="text-4xl font-bold mb-6 glitch">THE EXPERIENCE</h2>
+                        <p class="mb-6">Enter a world where technology and the spirit realm collide. Neon Spectral bridges the gap between cybernetic augmentation and ancient mystic energy.</p>
+                        <p class="mb-8">Navigate through a haunted digital Tokyo, where ghosts and AI merge in a symphony of supernatural technology.</p>
+                        <a href="#phantom" class="neon-button">DISCOVER MORE</a>
+                    </div>
+                    <div class="section-reveal">
+                        <div class="relative rounded-lg overflow-hidden border-2 border-opacity-50 shadow-lg" style="border-color: var(--electric-teal);">
+                            <img src="https://gameblur.net/wp-content/uploads/2023/04/gameblur-ghostwire-tokyo-retrospective-header.jpg" alt="Ghostwire Tokyo" class="w-full h-auto">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+                            <div class="absolute bottom-0 left-0 p-6">
+                                <h3 class="text-xl font-bold">GHOSTWIRE AESTHETICS</h3>
+                                <p class="text-sm text-gray-300">Ethereal visuals and supernatural elements</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="kanji-container" style="top: 20%; left: 10%;">神</div>
+            <div class="kanji-container" style="top: 60%; right: 15%;">幽</div>
+        </section>
+
+        <!-- Phantom Section -->
+        <section class="py-24 relative" id="phantom" style="background: linear-gradient(to bottom, rgba(10, 10, 18, 0.8), rgba(106, 0, 244, 0.2));">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="section-reveal order-2 md:order-1">
+                        <div class="relative rounded-lg overflow-hidden border-2 border-opacity-50 shadow-lg" style="border-color: var(--deep-violet);">
+                            <img src="https://media.npr.org/assets/img/2022/03/29/nya_fight_12_wide-bcdd6f7efa56bfbd20a9c08a66fd8fa9c9d74cd9.jpg" alt="Spectral Combat" class="w-full h-auto">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+                            <div class="absolute bottom-0 left-0 p-6">
+                                <h3 class="text-xl font-bold">SPECTRAL COMBAT</h3>
+                                <p class="text-sm text-gray-300">Ethereal encounters in the digital realm</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-reveal order-1 md:order-2">
+                        <h2 class="text-4xl font-bold mb-6 glitch">PHANTOM REALM</h2>
+                        <p class="mb-6">The spiritual energy flows through Tokyo's digital veins, manifesting as ethereal entities and mystical encounters.</p>
+                        <p class="mb-8">Use your spiritual connection to interact with the unseen world, revealing hidden passages and ancient knowledge.</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-opacity-20 bg-white p-4 rounded-lg border border-opacity-30" style="border-color: var(--deep-violet);">
+                                <h4 class="text-xl font-bold mb-2">SPIRIT VISION</h4>
+                                <p class="text-sm">See beyond the veil of reality</p>
+                            </div>
+                            <div class="bg-opacity-20 bg-white p-4 rounded-lg border border-opacity-30" style="border-color: var(--deep-violet);">
+                                <h4 class="text-xl font-bold mb-2">OCCULT SEALS</h4>
+                                <p class="text-sm">Ancient protection against darkness</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="kanji-container" style="top: 30%; right: 10%;">霊</div>
+            <div class="kanji-container" style="top: 70%; left: 15%;">怪</div>
+        </section>
+
+        <!-- Cyber Section -->
+        <section class="py-24 relative" id="cyber">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="section-reveal">
+                        <h2 class="text-4xl font-bold mb-6 glitch">CYBER DIMENSION</h2>
+                        <p class="mb-6">Augmented reality overlays the spirit realm with neon interfaces and digital corruption.</p>
+                        <p class="mb-8">Hack through security protocols while warding off malicious digital spirits that have infected the network.</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-opacity-20 bg-white p-4 rounded-lg border border-opacity-30" style="border-color: var(--neon-pink);">
+                                <h4 class="text-xl font-bold mb-2">NEURAL LINK</h4>
+                                <p class="text-sm">Connect to the digital afterlife</p>
+                            </div>
+                            <div class="bg-opacity-20 bg-white p-4 rounded-lg border border-opacity-30" style="border-color: var(--neon-pink);">
+                                <h4 class="text-xl font-bold mb-2">GHOST HACK</h4>
+                                <p class="text-sm">Manipulate both code and spirit</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-reveal">
+                        <div class="relative rounded-lg overflow-hidden border-2 border-opacity-50 shadow-lg" style="border-color: var(--neon-pink);">
+                            <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/e890b4118663901.608daaf0ea21c.png" alt="Cyberpunk Interface" class="w-full h-auto">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+                            <div class="absolute bottom-0 left-0 p-6">
+                                <h3 class="text-xl font-bold">INTERFACE SYSTEMS</h3>
+                                <p class="text-sm text-gray-300">Advanced HUD for navigating the spectral plane</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="kanji-container" style="top: 20%; left: 20%;">電</div>
+            <div class="kanji-container" style="top: 50%; right: 10%;">脳</div>
+        </section>
+
+        <!-- Interactive Demo Section -->
+        <section class="py-24 relative bg-opacity-30" style="background-color: var(--deep-violet);" id="demo">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold mb-12 glitch">INTERACTIVE ELEMENTS</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="section-reveal">
+                        <div class="bg-opacity-10 bg-white p-6 rounded-lg border border-opacity-30 h-full flex flex-col" style="border-color: var(--electric-teal);">
+                            <div class="mb-6">
+                                <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="color: var(--electric-teal);">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4">SPECTRAL VISION</h3>
+                            <p class="mb-6 flex-grow">Reveal hidden elements and spirits lurking in the digital shadows.</p>
+                            <button class="interactive-button w-full py-2 border border-opacity-70 rounded transition-all duration-300 hover:bg-opacity-20 hover:bg-white" style="border-color: var(--electric-teal);" data-interaction="vision">ACTIVATE VISION</button>
+                        </div>
+                    </div>
+                    <div class="section-reveal">
+                        <div class="bg-opacity-10 bg-white p-6 rounded-lg border border-opacity-30 h-full flex flex-col" style="border-color: var(--electric-teal);">
+                            <div class="mb-6">
+                                <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="color: var(--electric-teal);">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4">ENERGY WEAVING</h3>
+                            <p class="mb-6 flex-grow">Manipulate the flow of spectral energy to create defensive seals and reveal paths.</p>
+                            <button class="interactive-button w-full py-2 border border-opacity-70 rounded transition-all duration-300 hover:bg-opacity-20 hover:bg-white" style="border-color: var(--electric-teal);" data-interaction="energy">CHANNEL ENERGY</button>
+                        </div>
+                    </div>
+                    <div class="section-reveal">
+                        <div class="bg-opacity-10 bg-white p-6 rounded-lg border border-opacity-30 h-full flex flex-col" style="border-color: var(--electric-teal);">
+                            <div class="mb-6">
+                                <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="color: var(--electric-teal);">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4">GHOST HACK</h3>
+                            <p class="mb-6 flex-grow">Break through digital barriers by combining hacking with spiritual techniques.</p>
+                            <button class="interactive-button w-full py-2 border border-opacity-70 rounded transition-all duration-300 hover:bg-opacity-20 hover:bg-white" style="border-color: var(--electric-teal);" data-interaction="hack">INITIATE HACK</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-16 p-8 bg-opacity-10 bg-white rounded-lg border border-opacity-30" style="border-color: var(--electric-teal);" id="interactionResult">
+                    <h3 class="text-2xl font-bold mb-4">INTERACTION DISPLAY</h3>
+                    <p>Select an interaction above to experience the effect</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section class="py-24 relative" id="gallery">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold mb-12 glitch text-center">VISUAL ARCHIVE</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="section-reveal">
+                        <div class="relative overflow-hidden rounded-lg group cursor-pointer" id="gallery-1">
+                            <img src="https://cdn.dribbble.com/userupload/6995829/file/still-c57d332e282c0d2f98ab03d6fa4fc092.png" alt="Ghostwire Tokyo UI" class="w-full h-auto transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+                            <div class="absolute bottom-0 left-0 p-4">
+                                <h3 class="text-xl font-bold">INTERFACE DESIGN</h3>
+                                <p class="text-sm text-gray-300">Spectral HUD visualization</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-reveal">
+                        <div class="relative overflow-hidden rounded-lg group cursor-pointer" id="gallery-2">
+                            <img src="https://caniplaythat.com/wp-content/uploads/2022/03/sc6le1.jpg" alt="Ghostwire Tokyo Gameplay" class="w-full h-auto transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+                            <div class="absolute bottom-0 left-0 p-4">
+                                <h3 class="text-xl font-bold">ENERGY PROJECTION</h3>
+                                <p class="text-sm text-gray-300">Manipulating spectral energy</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-reveal">
+                        <div class="relative overflow-hidden rounded-lg group cursor-pointer" id="gallery-3">
+                            <img src="https://cdn.dribbble.com/userupload/4104901/file/still-aba3bca679af116caccb8e3aef83f452.png" alt="Cyberpunk HUD Interface" class="w-full h-auto transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+                            <div class="absolute bottom-0 left-0 p-4">
+                                <h3 class="text-xl font-bold">NEURAL MAPPING</h3>
+                                <p class="text-sm text-gray-300">Digital consciousness overlay</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="py-24 relative bg-opacity-30" style="background-color: var(--void-black);" id="contact">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div class="section-reveal">
+                        <h2 class="text-4xl font-bold mb-6 glitch">ESTABLISH CONNECTION</h2>
+                        <p class="mb-8">Reach out through the digital ether to connect with the Neon Spectral development team.</p>
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold mb-2">PROJECT DETAILS</h3>
+                            <p class="mb-1"><span class="text-gray-400">Project Name:</span> Neon Spectral</p>
+                            <p class="mb-1"><span class="text-gray-400">Version:</span> 1.0.0 Alpha</p>
+                            <p><span class="text-gray-400">Type:</span> Cyber-Phantom Interactive Experience</p>
+                        </div>
+                    </div>
+                    <div class="section-reveal">
+                        <form class="bg-opacity-10 bg-white p-6 rounded-lg border border-opacity-30" style="border-color: var(--electric-teal);">
+                            <div class="mb-4">
+                                <label for="name" class="block text-sm font-medium mb-2">YOUR IDENTIFIER</label>
+                                <input type="text" id="name" class="w-full bg-opacity-20 bg-gray-800 border border-opacity-50 rounded p-3 focus:outline-none focus:ring-2 focus:ring-opacity-50" style="border-color: var(--electric-teal); focus-ring-color: var(--electric-teal);">
+                            </div>
+                            <div class="mb-4">
+                                <label for="email" class="block text-sm font-medium mb-2">DIGITAL CONTACT POINT</label>
+                                <input type="email" id="email" class="w-full bg-opacity-20 bg-gray-800 border border-opacity-50 rounded p-3 focus:outline-none focus:ring-2 focus:ring-opacity-50" style="border-color: var(--electric-teal); focus-ring-color: var(--electric-teal);">
+                            </div>
+                            <div class="mb-6">
+                                <label for="message" class="block text-sm font-medium mb-2">YOUR MESSAGE</label>
+                                <textarea id="message" rows="4" class="w-full bg-opacity-20 bg-gray-800 border border-opacity-50 rounded p-3 focus:outline-none focus:ring-2 focus:ring-opacity-50" style="border-color: var(--electric-teal); focus-ring-color: var(--electric-teal);"></textarea>
+                            </div>
+                            <button type="submit" class="neon-button w-full">TRANSMIT MESSAGE</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-12 relative bg-opacity-80" style="background-color: var(--void-black);">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-6 md:mb-0">
+                        <h2 class="text-2xl font-bold glitch">NEON SPECTRAL</h2>
+                        <p class="text-sm text-gray-400">A CYBER-PHANTOM INTERACTIVE EXPERIENCE</p>
+                    </div>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-link">PRIVACY</a>
+                        <a href="#" class="text-link">TERMS</a>
+                        <a href="#" class="text-link">CREDITS</a>
+                    </div>
+                </div>
+                <div class="border-t border-opacity-20 mt-8 pt-8" style="border-color: var(--electric-teal);">
+                    <p class="text-center text-sm text-gray-400">© 2023 NEON SPECTRAL. ALL RIGHTS RESERVED.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center hidden" id="imageModal">
+        <div class="max-w-4xl w-full px-4">
+            <div class="relative">
+                <button class="absolute top-4 right-4 text-white" id="closeModal">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                <img src="" alt="Preview" class="w-full h-auto" id="modalImage">
+                <div class="p-4">
+                    <h3 class="text-2xl font-bold" id="modalTitle"></h3>
+                    <p class="text-gray-300" id="modalDescription"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="hoverSound" preload="auto">
+        <source src="https://cdn.jsdelivr.net/gh/pixelcave/sounds@1.0/paper-rustle.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="clickSound" preload="auto">
+        <source src="https://cdn.jsdelivr.net/gh/pixelcave/sounds@1.0/click.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="ambientSound" loop preload="auto">
+        <source src="https://cdn.jsdelivr.net/gh/pixelcave/sounds@1.0/ambient-slow.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Loading Screen
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const loadingProgress = document.getElementById('loadingProgress');
+            let progress = 0;
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // Fade out loading screen
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '0';
+                        
+                        // Start ambient audio
+                        const ambientSound = document.getElementById('ambientSound');
+                        ambientSound.volume = 0.2;
+                        
+                        // Ask for permission to play audio
+                        document.addEventListener('click', function audioActivate() {
+                            ambientSound.play();
+                            document.removeEventListener('click', audioActivate);
+                        });
+                        
+                        setTimeout(() => {
+                            loadingScreen.style.display = 'none';
+                            
+                            // Initialize animations after loading
+                            initAnimations();
+                            initWebGL();
+                            initParticles();
+                        }, 1000);
+                    }, 500);
+                }
+                
+                loadingProgress.style.width = `${progress}%`;
+            }, 200);
+        });
+
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenuButton').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.remove('hidden');
+            document.getElementById('clickSound').play();
+        });
+
+        document.getElementById('closeMobileMenu').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.add('hidden');
+            document.getElementById('clickSound').play();
+        });
+
+        // Section Reveal Animation
+        function initAnimations() {
+            const sections = document.querySelectorAll('.section-reveal');
+            
+            const observerOptions = {
+                rootMargin: '0px',
+                threshold: 0.25
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, observerOptions);
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Parallax Effect
+            document.addEventListener('mousemove', (e) => {
+                const parallaxLayers = document.querySelectorAll('.parallax-layer');
+                
+                parallaxLayers.forEach((layer) => {
+                    const depth = layer.getAttribute('data-depth');
+                    const moveX = (e.clientX - window.innerWidth / 2) * depth;
+                    const moveY = (e.clientY - window.innerHeight / 2) * depth;
+                    
+                    layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+                });
+            });
+
+            // Custom Scrollbar
+            window.addEventListener('scroll', () => {
+                const scrollBar = document.getElementById('customScrollbar');
+                const scrollPercentage = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+                
+                scrollBar.style.height = `${scrollPercentage}%`;
+                
+                // Add pulse animation when scrolling fast
+                if (Math.abs(window.scrollY - lastScrollY) > 50) {
+                    scrollBar.style.boxShadow = '0 0 20px var(--electric-teal), 0 0 40px var(--neon-pink)';
+                } else {
+                    scrollBar.style.boxShadow = '0 0 10px var(--electric-teal), 0 0 20px var(--neon-pink)';
+                }
+                
+                lastScrollY = window.scrollY;
+            });
+
+            // Micro-interactions
+            const buttons = document.querySelectorAll('.neon-button, .text-link');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    document.getElementById('hoverSound').currentTime = 0;
+                    document.getElementById('hoverSound').play();
+                });
+                
+                button.addEventListener('click', () => {
+                    document.getElementById('clickSound').currentTime = 0;
+                    document.getElementById('clickSound').play();
+                });
+            });
+
+            // Interactive buttons
+            const interactiveButtons = document.querySelectorAll('.interactive-button');
+            const interactionResult = document.getElementById('interactionResult');
+            
+            interactiveButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const interaction = button.getAttribute('data-interaction');
+                    document.getElementById('clickSound').play();
+                    
+                    switch(interaction) {
+                        case 'vision':
+                            interactionResult.innerHTML = `
+                                <h3 class="text-2xl font-bold mb-4">SPECTRAL VISION ACTIVATED</h3>
+                                <p>Revealing hidden entities in your surroundings. The veil between worlds thins...</p>
+                                <div class="mt-4 flex justify-center">
+                                    <img src="https://media.npr.org/assets/img/2022/03/29/nya_fight_12_wide-bcdd6f7efa56bfbd20a9c08a66fd8fa9c9d74cd9.jpg" alt="Spectral Vision" class="rounded max-w-full h-auto" style="max-height: 200px;">
+                                </div>
+                            `;
+                            break;
+                        case 'energy':
+                            interactionResult.innerHTML = `
+                                <h3 class="text-2xl font-bold mb-4">ENERGY WEAVING INITIATED</h3>
+                                <p>Channeling spectral energy through your fingertips. Draw a pattern to create a seal.</p>
+                                <div class="mt-4 flex justify-center">
+                                    <img src="https://caniplaythat.com/wp-content/uploads/2022/03/sc6le1.jpg" alt="Energy Weaving" class="rounded max-w-full h-auto" style="max-height: 200px;">
+                                </div>
+                            `;
+                            break;
+                        case 'hack':
+                            interactionResult.innerHTML = `
+                                <h3 class="text-2xl font-bold mb-4">GHOST HACK IN PROGRESS</h3>
+                                <p>Breaking through digital barriers using spiritual algorithms. Security bypassed.</p>
+                                <div class="mt-4 flex justify-center">
+                                    <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/e890b4118663901.608daaf0ea21c.png" alt="Ghost Hack" class="rounded max-w-full h-auto" style="max-height: 200px;">
+                                </div>
+                            `;
+                            break;
+                    }
+                });
+            });
+
+            // Gallery Image Modal
+            const galleryItems = document.querySelectorAll('[id^="gallery-"]');
+            const imageModal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDescription = document.getElementById('modalDescription');
+            const closeModal = document.getElementById('closeModal');
+            
+            galleryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const img = item.querySelector('img');
+                    const title = item.querySelector('h3').innerText;
+                    const desc = item.querySelector('p').innerText;
+                    
+                    modalImage.src = img.src;
+                    modalTitle.innerText = title;
+                    modalDescription.innerText = desc;
+                    imageModal.classList.remove('hidden');
+                    document.getElementById('clickSound').play();
+                });
+            });
+            
+            closeModal.addEventListener('click', () => {
+                imageModal.classList.add('hidden');
+                document.getElementById('clickSound').play();
+            });
+        }
+
+        // Radial Menu
+        function updateRadialMenu(e) {
+            const radialMenu = document.getElementById('radialMenu');
+            radialMenu.style.left = `${e.clientX}px`;
+            radialMenu.style.top = `${e.clientY}px`;
+            
+            // Show radial menu when mouse stops moving
+            clearTimeout(window.radialTimeout);
+            
+            window.radialTimeout = setTimeout(() => {
+                radialMenu.style.opacity = '1';
+            }, 500);
+            
+            // Hide when moving
+            radialMenu.style.opacity = '0';
+        }
+
+        document.addEventListener('mousemove', updateRadialMenu);
+
+        // WebGL 3D Environment
+        function initWebGL() {
+            // Basic Three.js setup
+            // This is a simplified version - in a real implementation,
+            // you would have more complex 3D elements
+            
+            const canvas = document.getElementById('webglCanvas');
+            
+            // Create renderer
+            const renderer = new THREE.WebGLRenderer({
+                canvas,
+                alpha: true,
+                antialias: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            
+            // Create scene
+            const scene = new THREE.Scene();
+            
+            // Create camera
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+            
+            // Add ambient light
+            const ambientLight = new THREE.AmbientLight(0x6a00f4, 0.5);
+            scene.add(ambientLight);
+            
+            // Add point light
+            const pointLight = new THREE.PointLight(0x00f5d4, 1, 100);
+            pointLight.position.set(10, 10, 10);
+            scene.add(pointLight);
+            
+            // Create particles
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 2000;
+            
+            const posArray = new Float32Array(particlesCount * 3);
+            
+            for(let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 25;
+            }
+            
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0x00f5d4,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+            
+            // Animation loop
+            let lastScrollY = window.scrollY;
+            
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                // Rotate particles
+                particlesMesh.rotation.y += 0.001;
+                
+                // Move particles based on scroll
+                particlesMesh.position.y = -window.scrollY * 0.001;
+                
+                // Render scene
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // Particle System
+        function initParticles() {
+            const particleContainer = document.getElementById('particleContainer');
+            
+            // Create floating kanji characters
+            const kanjiChars = ['神', '幽', '霊', '怪', '電', '脳', '魂', '鬼'];
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                createFloatingKanji(particleContainer, kanjiChars[i % kanjiChars.length]);
+            }
+            
+            // Add torii gates in the background
+            for (let i = 0; i < 5; i++) {
+                createToriiGate(particleContainer, i);
+            }
+        }
+        
+        function createFloatingKanji(container, char) {
+            const kanji = document.createElement('div');
+            kanji.classList.add('kanji-container');
+            kanji.style.fontSize = `${Math.random() * 4 + 2}rem`;
+            kanji.style.opacity = `${Math.random() * 0.3 + 0.05}`;
+            kanji.innerText = char;
+            
+            // Random position
+            const xPos = Math.random() * 100;
+            const yPos = Math.random() * 200;
+            kanji.style.left = `${xPos}%`;
+            kanji.style.top = `${yPos}vh`;
+            
+            // Random color
+            const colors = ['var(--electric-teal)', 'var(--neon-pink)', 'var(--deep-violet)', 'var(--corrupted-red)'];
+            kanji.style.color = colors[Math.floor(Math.random() * colors.length)];
+            
+            container.appendChild(kanji);
+            
+            // Animate using GSAP
+            gsap.to(kanji, {
+                y: -100,
+                x: Math.sin(yPos) * 30,
+                rotation: Math.random() * 20 - 10,
+                duration: Math.random() * 30 + 20,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+        }
+        
+        function createToriiGate(container, index) {
+            const torii = document.createElement('div');
+            torii.classList.add('torii-gate');
+            
+            // Set style for torii gate div
+            torii.style.backgroundImage = 'linear-gradient(transparent 40%, var(--corrupted-red) 40%, var(--corrupted-red) 60%, transparent 60%)';
+            torii.style.transform = `scale(${0.5 + index * 0.1}) translateZ(${-100 * index}px)`;
+            torii.style.filter = `blur(${index}px)`;
+            
+            container.appendChild(torii);
+            
+            // Animate using GSAP
+            gsap.to(torii, {
+                y: -50,
+                rotation: index % 2 === 0 ? 0.5 : -0.5,
+                duration: 30,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+        }
+
+        // Konami Code Easter Egg
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                
+                if (konamiIndex === konamiCode.length) {
+                    activateOccultMode();
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+
+        function activateOccultMode() {
+            document.getElementById('clickSound').play();
+            alert('Occult Mode activated! You have entered first-person exorcism view. Draw sealing patterns to ward off malicious spirits.');
+            
+            // In a full implementation, this would enable a first-person mode
+            // with WebGL-rendered drawing capabilities and voice recognition
+        }
+
+        // Initialize variables
+        let lastScrollY = window.scrollY;
+    </script>
+</body>
+</html>

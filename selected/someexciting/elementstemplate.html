@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Spectral - A Cyber-Phantom Interactive Experience</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+    <!-- GSAP for animations -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
+    <!-- Anime.js -->
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <!-- Import fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Bauhaus Modern';
+            src: url('https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@4.5.8/files/space-grotesk-latin-700-normal.woff2') format('woff2');
+            /* Using Space Grotesk as a modern geometric alternative to Bauhaus */
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        :root {
+            --teal: #00f5d4;
+            --violet: #6a00f4;
+            --black: #0a0a12;
+            --pink: #ff00ff;
+            --red: #ff003c;
+            --white: #e0fbfc;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Bauhaus Modern', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .neon-text {
+            text-shadow: 0 0 5px var(--teal), 0 0 10px var(--teal), 0 0 20px var(--teal), 0 0 40px var(--violet);
+            color: var(--white);
+        }
+
+        .neon-border {
+            box-shadow: 0 0 5px var(--teal), 0 0 10px var(--teal), 0 0 15px var(--violet);
+        }
+
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--red);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--teal);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(42px, 9999px, 44px, 0); }
+            5% { clip: rect(12px, 9999px, 59px, 0); }
+            10% { clip: rect(48px, 9999px, 29px, 0); }
+            15% { clip: rect(42px, 9999px, 73px, 0); }
+            20% { clip: rect(63px, 9999px, 27px, 0); }
+            25% { clip: rect(34px, 9999px, 55px, 0); }
+            30% { clip: rect(86px, 9999px, 73px, 0); }
+            35% { clip: rect(20px, 9999px, 20px, 0); }
+            40% { clip: rect(26px, 9999px, 60px, 0); }
+            45% { clip: rect(25px, 9999px, 66px, 0); }
+            50% { clip: rect(57px, 9999px, 98px, 0); }
+            55% { clip: rect(5px, 9999px, 46px, 0); }
+            60% { clip: rect(82px, 9999px, 31px, 0); }
+            65% { clip: rect(54px, 9999px, 27px, 0); }
+            70% { clip: rect(28px, 9999px, 99px, 0); }
+            75% { clip: rect(45px, 9999px, 69px, 0); }
+            80% { clip: rect(23px, 9999px, 85px, 0); }
+            85% { clip: rect(54px, 9999px, 84px, 0); }
+            90% { clip: rect(45px, 9999px, 47px, 0); }
+            95% { clip: rect(37px, 9999px, 20px, 0); }
+            100% { clip: rect(4px, 9999px, 91px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            5% { clip: rect(52px, 9999px, 74px, 0); }
+            10% { clip: rect(79px, 9999px, 85px, 0); }
+            15% { clip: rect(75px, 9999px, 5px, 0); }
+            20% { clip: rect(67px, 9999px, 61px, 0); }
+            25% { clip: rect(14px, 9999px, 79px, 0); }
+            30% { clip: rect(1px, 9999px, 66px, 0); }
+            35% { clip: rect(86px, 9999px, 30px, 0); }
+            40% { clip: rect(23px, 9999px, 98px, 0); }
+            45% { clip: rect(85px, 9999px, 72px, 0); }
+            50% { clip: rect(71px, 9999px, 75px, 0); }
+            55% { clip: rect(2px, 9999px, 48px, 0); }
+            60% { clip: rect(30px, 9999px, 16px, 0); }
+            65% { clip: rect(59px, 9999px, 50px, 0); }
+            70% { clip: rect(41px, 9999px, 62px, 0); }
+            75% { clip: rect(2px, 9999px, 82px, 0); }
+            80% { clip: rect(47px, 9999px, 73px, 0); }
+            85% { clip: rect(3px, 9999px, 27px, 0); }
+            90% { clip: rect(26px, 9999px, 55px, 0); }
+            95% { clip: rect(42px, 9999px, 97px, 0); }
+            100% { clip: rect(38px, 9999px, 49px, 0); }
+        }
+
+        .scanline {
+            width: 100%;
+            height: 100%;
+            z-index: 8;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 0, 0, 0) 0%,
+                rgba(255, 0, 0, 0) 50%,
+                rgba(0, 255, 221, 0.2) 50%,
+                rgba(0, 255, 221, 0) 51%
+            );
+            background-size: 100% 4px;
+            animation: scanlines 1s steps(60) infinite;
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        @keyframes scanlines {
+            from { background-position: 0 0; }
+            to { background-position: 0 100%; }
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+        }
+
+        .section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .button {
+            background: transparent;
+            border: 2px solid var(--teal);
+            color: var(--teal);
+            padding: 0.75rem 1.5rem;
+            font-family: 'Bauhaus Modern', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            box-shadow: 0 0 5px var(--teal), 0 0 10px var(--teal), 0 0 15px var(--violet);
+            color: var(--white);
+        }
+
+        .button:hover::before {
+            transform: translateX(100%);
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 212, 0.4), transparent);
+            transition: transform 0.5s ease;
+        }
+
+        .kanji {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 2rem;
+            opacity: 0.8;
+            position: absolute;
+            color: var(--teal);
+        }
+
+        .kanji:nth-child(1) { top: 10%; left: 5%; }
+        .kanji:nth-child(2) { top: 30%; left: 80%; }
+        .kanji:nth-child(3) { top: 70%; left: 15%; }
+        .kanji:nth-child(4) { top: 50%; left: 70%; }
+
+        .torii-gate {
+            position: absolute;
+            border: 8px solid var(--red);
+            width: 80px;
+            height: 120px;
+            border-top: 16px solid var(--red);
+            box-shadow: 0 0 15px var(--red);
+        }
+        
+        .torii-gate::before, .torii-gate::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 120%;
+            background-color: var(--red);
+            box-shadow: 0 0 15px var(--red);
+        }
+        
+        .torii-gate::before {
+            left: -16px;
+            top: -10%;
+        }
+        
+        .torii-gate::after {
+            right: -16px;
+            top: -10%;
+        }
+
+        .radial-menu {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(10, 10, 18, 0.8);
+            border: 2px solid var(--teal);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 0 10px var(--teal);
+        }
+
+        .menu-items {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            transform: scale(0);
+            transition: transform 0.5s ease;
+        }
+
+        .radial-menu:hover .menu-items {
+            transform: scale(1);
+        }
+
+        .menu-item {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--black);
+            border: 1px solid var(--teal);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            font-size: 1.2rem;
+            box-shadow: 0 0 5px var(--teal);
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            box-shadow: 0 0 10px var(--teal), 0 0 15px var(--violet);
+            transform: scale(1.1);
+        }
+
+        .menu-item:nth-child(1) { transform: translate(0, -80px); }
+        .menu-item:nth-child(2) { transform: translate(80px, 0); }
+        .menu-item:nth-child(3) { transform: translate(0, 80px); }
+        .menu-item:nth-child(4) { transform: translate(-80px, 0); }
+
+        .radial-menu:hover .menu-item:nth-child(1) { transform: translate(0, -80px); }
+        .radial-menu:hover .menu-item:nth-child(2) { transform: translate(80px, 0); }
+        .radial-menu:hover .menu-item:nth-child(3) { transform: translate(0, 80px); }
+        .radial-menu:hover .menu-item:nth-child(4) { transform: translate(-80px, 0); }
+
+        /* Particle system container */
+        #particle-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 60vh;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+
+        .scroll-progress {
+            width: 100%;
+            background: linear-gradient(to top, var(--teal), var(--violet));
+            height: 0%;
+            transition: height 0.1s;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .section {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem !important;
+            }
+            
+            .kanji {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Global overlay effects -->
+    <div class="scanline"></div>
+    
+    <!-- WebGL Canvas Container -->
+    <div id="canvas-container"></div>
+    
+    <!-- Particle System -->
+    <div id="particle-container"></div>
+    
+    <!-- Floating kanji elements -->
+    <div class="kanji">幽霊</div> <!-- Ghost -->
+    <div class="kanji">未来</div> <!-- Future -->
+    <div class="kanji">電子</div> <!-- Digital -->
+    <div class="kanji">夢</div>   <!-- Dream -->
+    
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator">
+        <div class="scroll-progress" id="scroll-progress"></div>
+    </div>
+    
+    <!-- Radial Menu -->
+    <div class="radial-menu">
+        <div class="menu-icon">+</div>
+        <div class="menu-items">
+            <div class="menu-item">↑</div>
+            <div class="menu-item">→</div>
+            <div class="menu-item">↓</div>
+            <div class="menu-item">←</div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Hero Section -->
+        <section class="section" id="hero">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-6xl mb-4 neon-text glitch" data-text="NEON SPECTRAL">NEON SPECTRAL</h1>
+                <p class="text-2xl mb-8 font-light">A Cyber-Phantom Interactive Experience</p>
+                <button class="button mt-8">Enter The Void</button>
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section class="section" id="about">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl mb-8 neon-text">DIGITAL PHANTOMS</h2>
+                <p class="mb-6 text-lg">Welcome to Neon Spectral, where cyberpunk aesthetics meet ethereal spirits in an immersive digital realm.</p>
+                <p class="mb-6 text-lg">Navigate through floating Tokyo streets while encountering ghostly apparitions and neon-lit shrines.</p>
+                <div class="grid grid-cols-2 gap-8 mt-12">
+                    <div>
+                        <h3 class="text-2xl mb-4" style="color: var(--teal);">PHANTOM VISION</h3>
+                        <p>Experience reality through the eyes of digital ghosts that inhabit the network.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl mb-4" style="color: var(--pink);">NEON REALITY</h3>
+                        <p>Enter a world where light pollution creates a perpetual twilight, punctuated by dazzling holographic advertisements.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Decorative torii gate -->
+            <div class="torii-gate" style="right: 15%; bottom: 20%;"></div>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="section" id="features">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl mb-8 neon-text">SYSTEM FEATURES</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="p-6 border border-opacity-50" style="border-color: var(--teal); background-color: rgba(10, 10, 18, 0.8);">
+                        <h3 class="text-xl mb-4" style="color: var(--teal);">SPECTRAL PARTICLES</h3>
+                        <p>Interact with responsive particle systems that form kanji characters and flee from your cursor.</p>
+                    </div>
+                    <div class="p-6 border border-opacity-50" style="border-color: var(--violet); background-color: rgba(10, 10, 18, 0.8);">
+                        <h3 class="text-xl mb-4" style="color: var(--violet);">DEPTH PERCEPTION</h3>
+                        <p>Experience parallax effects with multiple layers that create an immersive 3D environment.</p>
+                    </div>
+                    <div class="p-6 border border-opacity-50" style="border-color: var(--pink); background-color: rgba(10, 10, 18, 0.8);">
+                        <h3 class="text-xl mb-4" style="color: var(--pink);">RITUAL INTERACTIONS</h3>
+                        <p>Discover hidden yokai through specialized interactions and mystical patterns.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Decorative torii gate -->
+            <div class="torii-gate" style="left: 10%; bottom: 30%;"></div>
+        </section>
+        
+        <!-- Experience Section -->
+        <section class="section" id="experience">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl mb-8 neon-text">THE EXPERIENCE</h2>
+                <p class="mb-6 text-lg">Navigate through a world where traditional Japanese symbolism meets futuristic technology. Discover hidden interactions and unravel the secrets of the digital yokai.</p>
+                <div class="mt-12">
+                    <div class="mb-8">
+                        <h3 class="text-2xl mb-2" style="color: var(--teal);">SHRINE GATES</h3>
+                        <p>Pass through digital torii gates that transport you between dimensions of the experience.</p>
+                    </div>
+                    <div class="mb-8">
+                        <h3 class="text-2xl mb-2" style="color: var(--violet);">SPIRIT VISION</h3>
+                        <p>Activate special viewing modes to see beyond the veil of normal reality.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl mb-2" style="color: var(--pink);">OCCULT MODE</h3>
+                        <p>Discover the hidden "Occult Mode" by entering the right sequence of inputs.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section class="section" id="contact">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl mb-8 neon-text">CONNECT</h2>
+                <p class="mb-6 text-lg">Reach out through the digital void. Your message will be transmitted to our network of spectral operators.</p>
+                <form class="mt-8">
+                    <div class="mb-6">
+                        <input type="text" placeholder="YOUR IDENTITY" class="w-full bg-transparent border-b border-teal-400 p-3 focus:outline-none focus:border-pink-500 transition-colors">
+                    </div>
+                    <div class="mb-6">
+                        <input type="email" placeholder="YOUR DIGITAL BEACON (EMAIL)" class="w-full bg-transparent border-b border-teal-400 p-3 focus:outline-none focus:border-pink-500 transition-colors">
+                    </div>
+                    <div class="mb-6">
+                        <textarea placeholder="YOUR MESSAGE TO THE VOID" rows="5" class="w-full bg-transparent border-b border-teal-400 p-3 focus:outline-none focus:border-pink-500 transition-colors"></textarea>
+                    </div>
+                    <button type="button" class="button">TRANSMIT</button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="py-12 text-center">
+            <p>NEON SPECTRAL © 2025 • A CYBER-PHANTOM EXPERIENCE</p>
+            <p class="mt-2 text-sm opacity-70">WHERE DIGITAL GHOSTS AND REALITY CONVERGE</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize Three.js Scene
+        let scene, camera, renderer, particles, geometry, materials = [], parameters, particles2, fog;
+        let mouseX = 0, mouseY = 0;
+        let windowHalfX = window.innerWidth / 2;
+        let windowHalfY = window.innerHeight / 2;
+        
+        init();
+        animate();
+        
+        function init() {
+            const container = document.getElementById('canvas-container');
+            
+            // Create scene
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x0a0a12, 0.0025);
+            
+            // Setup camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 2000);
+            camera.position.z = 1000;
+            
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ alpha: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+            
+            // Particle systems
+            geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            
+            const textureLoader = new THREE.TextureLoader();
+            
+            const sprite1 = textureLoader.load('https://threejs.org/examples/textures/sprites/spark1.png');
+            const sprite2 = textureLoader.load('https://threejs.org/examples/textures/sprites/snowflake2.png');
+            
+            for (let i = 0; i < 1000; i ++) {
+                const x = Math.random() * 2000 - 1000;
+                const y = Math.random() * 2000 - 1000;
+                const z = Math.random() * 2000 - 1000;
+                vertices.push(x, y, z);
+            }
+            
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            
+            parameters = [
+                [[0.00, 0.96, 0.83], sprite1, 20],
+                [[0.42, 0.00, 0.96], sprite2, 10]
+            ];
+            
+            for (let i = 0; i < parameters.length; i++) {
+                const color = parameters[i][0];
+                const sprite = parameters[i][1];
+                const size = parameters[i][2];
+                
+                materials[i] = new THREE.PointsMaterial({
+                    size: size,
+                    map: sprite,
+                    blending: THREE.AdditiveBlending,
+                    depthTest: false,
+                    transparent: true
+                });
+                
+                materials[i].color.setRGB(color[0], color[1], color[2]);
+                
+                const particles = new THREE.Points(geometry, materials[i]);
+                
+                particles.rotation.x = Math.random() * 6;
+                particles.rotation.y = Math.random() * 6;
+                particles.rotation.z = Math.random() * 6;
+                
+                scene.add(particles);
+            }
+            
+            // Event listeners
+            document.addEventListener('mousemove', onDocumentMouseMove);
+            window.addEventListener('resize', onWindowResize);
+        }
+        
+        function onWindowResize() {
+            windowHalfX = window.innerWidth / 2;
+            windowHalfY = window.innerHeight / 2;
+            
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        function onDocumentMouseMove(event) {
+            mouseX = (event.clientX - windowHalfX) * 0.05;
+            mouseY = (event.clientY - windowHalfY) * 0.05;
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+        }
+        
+        function render() {
+            const time = Date.now() * 0.00005;
+            
+            camera.position.x += (mouseX - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY - camera.position.y) * 0.05;
+            
+            camera.lookAt(scene.position);
+            
+            for (let i = 0; i < scene.children.length; i++) {
+                const object = scene.children[i];
+                
+                if (object instanceof THREE.Points) {
+                    object.rotation.y = time * (i < 4 ? i + 1 : -(i + 1));
+                }
+            }
+            
+            for (let i = 0; i < materials.length; i++) {
+                const color = parameters[i][0];
+                const h = (360 * (color[0] + time) % 360) / 360;
+                materials[i].color.setHSL(h, color[1], color[2]);
+            }
+            
+            renderer.render(scene, camera);
+        }
+
+        // Handle scrolling and update progress bar
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercentage = (scrollTop / scrollHeight) * 100;
+            
+            document.getElementById('scroll-progress').style.height = `${scrollPercentage}%`;
+            
+            // Add parallax effect to elements
+            const sections = document.querySelectorAll('.section');
+            sections.forEach((section, index) => {
+                const speed = 0.1 * (index + 1);
+                const yPos = -(scrollTop * speed);
+                section.style.transform = `translateY(${yPos}px)`;
+            });
+        });
+        
+        // Button hover effects with anime.js
+        document.querySelectorAll('.button').forEach(button => {
+            button.addEventListener('mouseover', () => {
+                anime({
+                    targets: button,
+                    scale: 1.05,
+                    duration: 300,
+                    easing: 'easeOutQuad'
+                });
+            });
+            
+            button.addEventListener('mouseout', () => {
+                anime({
+                    targets: button,
+                    scale: 1,
+                    duration: 300,
+                    easing: 'easeOutQuad'
+                });
+            });
+            
+            button.addEventListener('click', () => {
+                // Create ink splatter effect
+                const splatter = document.createElement('div');
+                splatter.classList.add('ink-splatter');
+                splatter.style.position = 'absolute';
+                splatter.style.top = '0';
+                splatter.style.left = '0';
+                splatter.style.width = '100%';
+                splatter.style.height = '100%';
+                splatter.style.background = 'radial-gradient(circle, rgba(0,245,212,0.8) 0%, rgba(0,245,212,0) 70%)';
+                splatter.style.transform = 'scale(0)';
+                splatter.style.opacity = '0.8';
+                
+                button.appendChild(splatter);
+                
+                anime({
+                    targets: splatter,
+                    scale: 3,
+                    opacity: 0,
+                    duration: 800,
+                    easing: 'easeOutExpo',
+                    complete: function() {
+                        splatter.remove();
+                    }
+                });
+            });
+        });
+        
+        // Initialize radial menu
+        const radialMenu = document.querySelector('.radial-menu');
+        const menuItems = document.querySelectorAll('.menu-item');
+        
+        radialMenu.addEventListener('click', () => {
+            radialMenu.classList.toggle('active');
+        });
+        
+        // Occult mode easter egg (Konami code: ↑ ↑ ↓ ↓ ← → ← → B A)
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    activateOccultMode();
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+        
+        function activateOccultMode() {
+            document.body.style.transition = 'all 2s';
+            document.body.style.filter = 'invert(100%) hue-rotate(180deg)';
+            
+            // Audio effect (would be implemented if we were using actual audio)
+            //const occultAudio = new Audio('occult-chant.mp3');
+            //occultAudio.play();
+            
+            setTimeout(() => {
+                document.body.style.filter = '';
+            }, 5000);
+        }
+        
+        // Text dissolve animation for section headers
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateText(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+        
+        document.querySelectorAll('h2').forEach(header => {
+            observer.observe(header);
+        });
+        
+        function animateText(element) {
+            const text = element.textContent;
+            element.textContent = '';
+            
+            for (let i = 0; i < text.length; i++) {
+                const span = document.createElement('span');
+                span.textContent = text[i];
+                span.style.display = 'inline-block';
+                span.style.opacity = '0';
+                span.style.transform = 'translateY(20px)';
+                element.appendChild(span);
+                
+                anime({
+                    targets: span,
+                    opacity: 1,
+                    translateY: 0,
+                    delay: i * 50,
+                    duration: 800,
+                    easing: 'easeOutQuad'
+                });
+            }
+        }
+    </script>
+</body>
+</html>

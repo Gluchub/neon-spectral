@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Spectral - CSS Styling</title>
+  
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  
+  <!-- Font imports -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Custom CSS Properties */
+    :root {
+      /* Primary Colors */
+      --teal: #00f5d4;
+      --violet: #6a00f4;
+      --void-black: #0a0a12;
+      
+      /* Accent Colors */
+      --neon-pink: #ff00ff;
+      --corrupted-red: #ff003c;
+      --holographic-white: #e0fbfc;
+      
+      /* Animation Timings */
+      --slow: 2s;
+      --medium: 0.8s;
+      --fast: 0.4s;
+      
+      /* Glow Strengths */
+      --glow-weak: 0 0 5px;
+      --glow-medium: 0 0 10px;
+      --glow-strong: 0 0 20px;
+      --glow-intense: 0 0 30px;
+    }
+    
+    /* Custom Font for Headers (Bauhaus) */
+    @font-face {
+      font-family: 'Bauhaus Modern';
+      src: url('https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5.0.2/files/space-grotesk-latin-700-normal.woff2') format('woff2');
+      font-weight: bold;
+      font-style: normal;
+      font-display: swap;
+    }
+    
+    /* Base Styles */
+    body {
+      background-color: var(--void-black);
+      color: var(--holographic-white);
+      font-family: 'Inter', sans-serif;
+      font-weight: 200;
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(106, 0, 244, 0.1) 0%, rgba(10, 10, 18, 0) 60%),
+        radial-gradient(circle at 90% 80%, rgba(0, 245, 212, 0.1) 0%, rgba(10, 10, 18, 0) 60%);
+    }
+    
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Bauhaus Modern', sans-serif;
+      letter-spacing: 0.05em;
+      font-weight: bold;
+    }
+    
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, var(--teal), var(--violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: var(--glow-medium) rgba(0, 245, 212, 0.5);
+    }
+    
+    h2 {
+      font-size: 2.5rem;
+      color: var(--teal);
+      text-shadow: var(--glow-weak) var(--teal);
+    }
+    
+    h3 {
+      font-size: 1.8rem;
+      color: var(--neon-pink);
+      text-shadow: var(--glow-weak) var(--neon-pink);
+    }
+    
+    p {
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+    }
+    
+    /* Neon Text Effects */
+    .neon-text-teal {
+      color: var(--teal);
+      text-shadow: 
+        var(--glow-medium) var(--teal),
+        var(--glow-weak) var(--holographic-white);
+    }
+    
+    .neon-text-violet {
+      color: var(--violet);
+      text-shadow: 
+        var(--glow-medium) var(--violet),
+        var(--glow-weak) var(--holographic-white);
+    }
+    
+    .neon-text-pink {
+      color: var(--neon-pink);
+      text-shadow: 
+        var(--glow-medium) var(--neon-pink),
+        var(--glow-weak) var(--holographic-white);
+    }
+    
+    .neon-text-red {
+      color: var(--corrupted-red);
+      text-shadow: 
+        var(--glow-medium) var(--corrupted-red),
+        var(--glow-weak) var(--holographic-white);
+    }
+    
+    /* Container */
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+    
+    /* Sections */
+    .section {
+      margin: 5rem 0;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, 
+                 rgba(106, 0, 244, 0.1) 0%, 
+                 rgba(10, 10, 18, 0.2) 50%, 
+                 rgba(0, 245, 212, 0.1) 100%);
+      z-index: -1;
+      border-radius: 0.5rem;
+    }
+    
+    .section::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, 
+                 var(--teal) 0%, 
+                 transparent 30%, 
+                 transparent 70%, 
+                 var(--violet) 100%);
+      z-index: -2;
+      border-radius: 0.6rem;
+      opacity: 0.5;
+    }
+    
+    /* Buttons */
+    .neon-btn {
+      background-color: transparent;
+      border: 2px solid var(--teal);
+      color: var(--teal);
+      padding: 0.6rem 2rem;
+      font-family: 'Bauhaus Modern', sans-serif;
+      font-size: 1.2rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      transition: all var(--medium) ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 245, 212, 0.4);
+      cursor: pointer;
+      margin: 1rem;
+      display: inline-block;
+    }
+    
+    .neon-btn:hover {
+      background-color: var(--teal);
+      color: var(--void-black);
+      box-shadow: 
+        0 0 15px rgba(0, 245, 212, 0.6),
+        0 0 30px rgba(0, 245, 212, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .neon-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 0 5px rgba(0, 245, 212, 0.4);
+    }
+    
+    .neon-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+                 transparent 0%, 
+                 rgba(224, 251, 252, 0.3) 50%, 
+                 transparent 100%);
+      transition: left var(--medium) ease;
+    }
+    
+    .neon-btn:hover::before {
+      left: 100%;
+    }
+    
+    .neon-btn.violet {
+      border-color: var(--violet);
+      color: var(--violet);
+      box-shadow: 0 0 10px rgba(106, 0, 244, 0.4);
+    }
+    
+    .neon-btn.violet:hover {
+      background-color: var(--violet);
+      color: var(--holographic-white);
+      box-shadow: 
+        0 0 15px rgba(106, 0, 244, 0.6),
+        0 0 30px rgba(106, 0, 244, 0.3);
+    }
+    
+    .neon-btn.pink {
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+      box-shadow: 0 0 10px rgba(255, 0, 255, 0.4);
+    }
+    
+    .neon-btn.pink:hover {
+      background-color: var(--neon-pink);
+      color: var(--void-black);
+      box-shadow: 
+        0 0 15px rgba(255, 0, 255, 0.6),
+        0 0 30px rgba(255, 0, 255, 0.3);
+    }
+    
+    .neon-btn.red {
+      border-color: var(--corrupted-red);
+      color: var(--corrupted-red);
+      box-shadow: 0 0 10px rgba(255, 0, 60, 0.4);
+    }
+    
+    .neon-btn.red:hover {
+      background-color: var(--corrupted-red);
+      color: var(--void-black);
+      box-shadow: 
+        0 0 15px rgba(255, 0, 60, 0.6),
+        0 0 30px rgba(255, 0, 60, 0.3);
+    }
+    
+    /* Input Styles */
+    .neon-input {
+      background-color: rgba(10, 10, 18, 0.7);
+      border: 1px solid var(--teal);
+      border-radius: 4px;
+      color: var(--holographic-white);
+      padding: 0.8rem 1.2rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      width: 100%;
+      transition: all var(--fast) ease;
+      box-shadow: inset 0 0 5px rgba(0, 245, 212, 0.2);
+      margin-bottom: 1.5rem;
+    }
+    
+    .neon-input:focus {
+      outline: none;
+      border-color: var(--neon-pink);
+      box-shadow: 
+        0 0 0 1px var(--neon-pink),
+        inset 0 0 8px rgba(255, 0, 255, 0.3);
+    }
+    
+    /* Card Style */
+    .neon-card {
+      background-color: rgba(10, 10, 18, 0.8);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--medium) ease, box-shadow var(--medium) ease;
+    }
+    
+    .neon-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, 
+                 var(--teal) 0%, 
+                 transparent 30%, 
+                 transparent 70%, 
+                 var(--violet) 100%);
+      z-index: -1;
+      border-radius: 10px;
+      opacity: 0.5;
+    }
+    
+    .neon-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        0 5px 20px rgba(0, 245, 212, 0.2),
+        0 10px 30px rgba(106, 0, 244, 0.1);
+    }
+    
+    /* Glowing Links */
+    .neon-link {
+      color: var(--holographic-white);
+      position: relative;
+      text-decoration: none;
+      overflow: hidden;
+      display: inline-block;
+      padding-bottom: 2px;
+      transition: color var(--fast) ease;
+    }
+    
+    .neon-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: var(--teal);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform var(--fast) ease;
+      box-shadow: 0 0 8px var(--teal);
+    }
+    
+    .neon-link:hover {
+      color: var(--teal);
+      text-shadow: var(--glow-weak) var(--teal);
+    }
+    
+    .neon-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+    
+    /* Loading Animation */
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 0;
+    }
+    
+    .loading {
+      display: inline-block;
+      position: relative;
+      width: 80px;
+      height: 80px;
+    }
+    
+    .loading div {
+      position: absolute;
+      background-color: var(--teal);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      animation: loading 1.2s linear infinite;
+      box-shadow: 0 0 15px var(--teal);
+    }
+    
+    .loading div:nth-child(1) {
+      top: 0;
+      left: 32px;
+      animation-delay: 0s;
+    }
+    
+    .loading div:nth-child(2) {
+      top: 8px;
+      right: 8px;
+      animation-delay: 0.2s;
+      background-color: var(--neon-pink);
+      box-shadow: 0 0 15px var(--neon-pink);
+    }
+    
+    .loading div:nth-child(3) {
+      right: 0;
+      top: 32px;
+      animation-delay: 0.4s;
+      background-color: var(--violet);
+      box-shadow: 0 0 15px var(--violet);
+    }
+    
+    .loading div:nth-child(4) {
+      bottom: 8px;
+      right: 8px;
+      animation-delay: 0.6s;
+      background-color: var(--corrupted-red);
+      box-shadow: 0 0 15px var(--corrupted-red);
+    }
+    
+    @keyframes loading {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    /* Progress Bar */
+    .progress-container {
+      width: 100%;
+      height: 14px;
+      background-color: rgba(10, 10, 18, 0.8);
+      border-radius: 7px;
+      overflow: hidden;
+      position: relative;
+      margin: 2rem 0;
+      border: 1px solid rgba(0, 245, 212, 0.3);
+    }
+    
+    .progress-bar {
+      height: 100%;
+      border-radius: 7px;
+      background: linear-gradient(90deg, var(--teal), var(--violet));
+      width: 75%;
+      position: relative;
+      animation: pulse var(--slow) ease infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 5px var(--teal); }
+      50% { box-shadow: 0 0 15px var(--violet); }
+      100% { box-shadow: 0 0 5px var(--teal); }
+    }
+    
+    /* Pulsating Circle */
+    .pulse-circle {
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(var(--violet), transparent 70%);
+      border-radius: 50%;
+      position: relative;
+      margin: 2rem auto;
+      animation: circle-pulse var(--slow) ease infinite;
+    }
+    
+    .pulse-circle::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: transparent;
+      border-radius: 50%;
+      border: 2px solid var(--teal);
+      animation: circle-scale var(--slow) ease infinite;
+    }
+    
+    @keyframes circle-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(106, 0, 244, 0.6); }
+      70% { box-shadow: 0 0 0 30px rgba(106, 0, 244, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(106, 0, 244, 0); }
+    }
+    
+    @keyframes circle-scale {
+      0% { transform: scale(0.8); opacity: 1; }
+      70% { transform: scale(1.2); opacity: 0; }
+      100% { transform: scale(0.8); opacity: 1; }
+    }
+    
+    /* Scanline Effect */
+    .scanline {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, 
+                 rgba(224, 251, 252, 0) 0%, 
+                 rgba(224, 251, 252, 0.03) 50%, 
+                 rgba(224, 251, 252, 0) 100%);
+      opacity: 0.5;
+      z-index: 1000;
+      pointer-events: none;
+      animation: scanline 8s linear infinite;
+    }
+    
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100vh); }
+    }
+    
+    /* Grid Layout */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+    
+    /* Glitch Effect */
+    .glitch {
+      position: relative;
+      color: var(--holographic-white);
+      font-size: 2rem;
+      font-family: 'Bauhaus Modern', sans-serif;
+      letter-spacing: 0.05em;
+      display: inline-block;
+    }
+    
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .glitch::before {
+      color: var(--neon-pink);
+      z-index: -1;
+      animation: glitch-before 3s infinite linear alternate-reverse;
+    }
+    
+    .glitch::after {
+      color: var(--teal);
+      z-index: -2;
+      animation: glitch-after 2s infinite linear alternate-reverse;
+    }
+    
+    @keyframes glitch-before {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+    
+    @keyframes glitch-after {
+      0% { transform: translate(0); }
+      20% { transform: translate(2px, -2px); }
+      40% { transform: translate(2px, 2px); }
+      60% { transform: translate(-2px, -2px); }
+      80% { transform: translate(-2px, 2px); }
+      100% { transform: translate(0); }
+    }
+    
+    /* Japanese Characters */
+    .jp-text {
+      font-family: 'Bauhaus Modern', sans-serif, "Yu Gothic", "Hiragino Kaku Gothic Pro";
+      font-weight: 700;
+      font-size: 2.5rem;
+      letter-spacing: 0.1em;
+      margin: 2rem 0;
+      display: inline-block;
+      color: var(--holographic-white);
+    }
+    
+    /* Torii Gate Icon (Stylized) */
+    .torii-icon {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin: 2rem auto;
+    }
+    
+    .torii-top {
+      position: absolute;
+      top: 10px;
+      left: 5px;
+      width: 70px;
+      height: 10px;
+      background-color: var(--corrupted-red);
+      border-radius: 2px;
+      box-shadow: 0 0 10px var(--corrupted-red);
+    }
+    
+    .torii-mid {
+      position: absolute;
+      top: 25px;
+      left: 10px;
+      width: 60px;
+      height: 8px;
+      background-color: var(--corrupted-red);
+      border-radius: 2px;
+      box-shadow: 0 0 10px var(--corrupted-red);
+    }
+    
+    .torii-left {
+      position: absolute;
+      top: 10px;
+      left: 15px;
+      width: 8px;
+      height: 70px;
+      background-color: var(--corrupted-red);
+      border-radius: 2px;
+      box-shadow: 0 0 10px var(--corrupted-red);
+    }
+    
+    .torii-right {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      width: 8px;
+      height: 70px;
+      background-color: var(--corrupted-red);
+      border-radius: 2px;
+      box-shadow: 0 0 10px var(--corrupted-red);
+    }
+    
+    /* Particles Container */
+    .particles-demo {
+      height: 300px;
+      width: 100%;
+      position: relative;
+      background-color: rgba(10, 10, 18, 0.9);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background-color: var(--teal);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--teal);
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .particle:nth-child(2n) {
+      background-color: var(--violet);
+      box-shadow: 0 0 10px var(--violet);
+      animation-duration: 8s;
+      width: 6px;
+      height: 6px;
+    }
+    
+    .particle:nth-child(3n) {
+      background-color: var(--neon-pink);
+      box-shadow: 0 0 10px var(--neon-pink);
+      animation-duration: 10s;
+      width: 3px;
+      height: 3px;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0) translateX(0); opacity: 1; }
+      50% { transform: translateY(-100px) translateX(50px); opacity: 0.6; }
+      100% { transform: translateY(0) translateX(0); opacity: 1; }
+    }
+    
+    /* Media Queries */
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      h2 { font-size: 2rem; }
+      .grid { grid-template-columns: 1fr; }
+    }
+    
+    @media (max-width: 480px) {
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.8rem; }
+      .container { width: 95%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Scanline Effect -->
+  <div class="scanline"></div>
+  
+  <div class="container">
+    <header class="mt-10 mb-20">
+      <h1 class="text-center">ネオン スペクトル</h1>
+      <h2 class="text-center">Neon Spectral</h2>
+      <p class="text-center text-lg">A Cyber-Phantom Interactive Experience</p>
+    </header>
+    
+    <section class="section">
+      <h2 class="mb-6">Primary Design System</h2>
+      
+      <div class="grid">
+        <div class="neon-card">
+          <h3>Color Palette</h3>
+          <div class="flex flex-wrap mt-4">
+            <div class="w-20 h-20 m-2 rounded-md" style="background-color: #00f5d4; box-shadow: 0 0 15px #00f5d4;"></div>
+            <div class="w-20 h-20 m-2 rounded-md" style="background-color: #6a00f4; box-shadow: 0 0 15px #6a00f4;"></div>
+            <div class="w-20 h-20 m-2 rounded-md" style="background-color: #0a0a12; box-shadow: 0 0 15px #0a0a12;"></div>
+            <div class="w-20 h-20 m-2 rounded-md" style="background-color: #ff00ff; box-shadow: 0 0 15px #ff00ff;"></div>
+            <div class="w-20 h-20 m-2 rounded-md" style="background-color: #ff003c; box-shadow: 0 0 15px #ff003c;"></div>
+            <div class="w-20 h-20 m-2 rounded-md" style="background-color: #e0fbfc; box-shadow: 0 0 15px #e0fbfc;"></div>
+          </div>
+        </div>
+        
+        <div class="neon-card">
+          <h3>Typography</h3>
+          <p>Header font: <span class="font-bold">Bauhaus Modern</span> (geometric, bold)</p>
+          <p>Body font: <span class="font-bold">Inter</span> (ultra-light with variable weight)</p>
+          <div class="mt-4">
+            <p class="neon-text-teal font-bold">Neon Teal Text</p>
+            <p class="neon-text-violet font-bold">Neon Violet Text</p>
+            <p class="neon-text-pink font-bold">Neon Pink Text</p>
+            <p class="neon-text-red font-bold">Corrupted Red Text</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="section">
+      <h2>UI Components</h2>
+      
+      <div class="my-10">
+        <h3 class="mb-4">Buttons</h3>
+        <div class="flex flex-wrap">
+          <a href="#" class="neon-btn">Explore</a>
+          <a href="#" class="neon-btn violet">Connect</a>
+          <a href="#" class="neon-btn pink">Interact</a>
+          <a href="#" class="neon-btn red">Warning</a>
+        </div>
+      </div>
+      
+      <div class="my-10">
+        <h3 class="mb-4">Form Elements</h3>
+        <input type="text" class="neon-input" placeholder="Enter your neural link ID...">
+        <input type="password" class="neon-input" placeholder="Biometric passphrase...">
+      </div>
+      
+      <div class="my-10">
+        <h3 class="mb-4">Progress Indicators</h3>
+        
+        <div class="loading-container">
+          <div class="loading">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+        
+        <div class="progress-container">
+          <div class="progress-bar"></div>
+        </div>
+        
+        <div class="pulse-circle"></div>
+      </div>
+      
+      <div class="my-10">
+        <h3 class="mb-4">Links & Navigation</h3>
+        <p>
+          Explore the <a href="#" class="neon-link">digital astral plane</a> or connect to the 
+          <a href="#" class="neon-link">neural network</a> for enhanced perception.
+        </p>
+      </div>
+    </section>
+    
+    <section class="section">
+      <h2>Special Effects</h2>
+      
+      <div class="my-10">
+        <h3 class="mb-4">Glitch Text</h3>
+        <div class="text-center my-8">
+          <span class="glitch" data-text="CYBER PHANTOM">CYBER PHANTOM</span>
+        </div>
+      </div>
+      
+      <div class="my-10">
+        <h3 class="mb-4">Japanese Characters</h3>
+        <div class="text-center">
+          <span class="jp-text neon-text-teal">幽霊</span>
+          <span class="jp-text neon-text-pink">サイバー</span>
+          <span class="jp-text neon-text-violet">電子</span>
+        </div>
+      </div>
+      
+      <div class="my-10">
+        <h3 class="mb-4">Torii Gate Icon</h3>
+        <div class="torii-icon">
+          <div class="torii-top"></div>
+          <div class="torii-mid"></div>
+          <div class="torii-left"></div>
+          <div class="torii-right"></div>
+        </div>
+      </div>
+      
+      <div class="my-10">
+        <h3 class="mb-4">Particle Effect</h3>
+        <div class="particles-demo">
+          <div class="particle" style="top: 20%; left: 30%;"></div>
+          <div class="particle" style="top: 45%; left: 80%;"></div>
+          <div class="particle" style="top: 70%; left: 20%;"></div>
+          <div class="particle" style="top: 30%; left: 50%;"></div>
+          <div class="particle" style="top: 65%; left: 65%;"></div>
+          <div class="particle" style="top: 15%; left: 75%;"></div>
+          <div class="particle" style="top: 85%; left: 40%;"></div>
+          <div class="particle" style="top: 50%; left: 25%;"></div>
+          <div class="particle" style="top: 35%; left: 15%;"></div>
+          <div class="particle" style="top: 75%; left: 85%;"></div>
+          <div class="particle" style="top: 10%; left: 60%;"></div>
+          <div class="particle" style="top: 55%; left: 5%;"></div>
+          <div class="particle" style="top: 25%; left: 90%;"></div>
+          <div class="particle" style="top: 40%; left: 35%;"></div>
+          <div class="particle" style="top: 60%; left: 70%;"></div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="section">
+      <h2>Content Cards</h2>
+      
+      <div class="grid">
+        <div class="neon-card">
+          <h3>Spectral Vision</h3>
+          <p>Activate your augmented perception to see beyond the veil of reality. Digital ghosts and electronic spirits manifest in the space between networks.</p>
+          <a href="#" class="neon-btn">Activate</a>
+        </div>
+        
+        <div class="neon-card">
+          <h3>Neural Link</h3>
+          <p>Connect your consciousness to the digital stream and experience the flow of data directly through your synapses.</p>
+          <a href="#" class="neon-btn violet">Connect</a>
+        </div>
+        
+        <div class="neon-card">
+          <h3>Phantom Protocol</h3>
+          <p>Initiate the phantom protocol to become one with the digital shadows. Move unseen through networks and bypass security barriers.</p>
+          <a href="#" class="neon-btn pink">Initiate</a>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <script>
+    // Add more particles dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+      const particlesDemo = document.querySelector('.particles-demo');
+      
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        particlesDemo.appendChild(particle);
+      }
+    });
+  </script>
+</body>
+</html>

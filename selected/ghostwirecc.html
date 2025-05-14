@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Spectral - A Cyber-Phantom Interactive Experience</title>
+    <meta name="description" content="An immersive cyber-phantom experience combining Ghostwire: Tokyo and Cyberpunk 2077 aesthetics with interactive WebGL elements, neon visuals, and paranormal interactions.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.9.1/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    
+    <style>
+        :root {
+            --teal: #00f5d4;
+            --violet: #6a00f4;
+            --black: #0a0a12;
+            --pink: #ff00ff;
+            --red: #ff003c;
+            --white: #e0fbfc;
+        }
+        
+        @font-face {
+            font-family: 'Bauhaus Modern';
+            src: url('https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@4.5.0/files/space-grotesk-latin-500-normal.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-weight: 200;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Bauhaus Modern', 'Noto Sans JP', sans-serif;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+        
+        .jp-text {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, var(--black) 80%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.03) 50%,
+                rgba(0, 0, 0, 0.1) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.2;
+        }
+        
+        .glitch {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip: rect(0, 0, 0, 0);
+        }
+        
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--red);
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+        
+        .glitch::after {
+            left: -2px;
+            text-shadow: 1px 0 var(--teal);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(36px, 9999px, 9px, 0); }
+            5% { clip: rect(85px, 9999px, 29px, 0); }
+            10% { clip: rect(145px, 9999px, 131px, 0); }
+            15% { clip: rect(157px, 9999px, 151px, 0); }
+            20% { clip: rect(14px, 9999px, 4px, 0); }
+            25% { clip: rect(82px, 9999px, 107px, 0); }
+            30% { clip: rect(114px, 9999px, 5px, 0); }
+            100% { clip: rect(0, 0, 0, 0); }
+        }
+        
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(96px, 9999px, 11px, 0); }
+            5% { clip: rect(47px, 9999px, 47px, 0); }
+            10% { clip: rect(70px, 9999px, 115px, 0); }
+            15% { clip: rect(57px, 9999px, 62px, 0); }
+            20% { clip: rect(94px, 9999px, 29px, 0); }
+            25% { clip: rect(29px, 9999px, 32px, 0); }
+            30% { clip: rect(22px, 9999px, 135px, 0); }
+            100% { clip: rect(0, 0, 0, 0); }
+        }
+        
+        .content {
+            position: relative;
+            z-index: 10;
+            padding: 4rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .title {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            color: var(--white);
+            text-shadow: 
+                0 0 5px var(--teal),
+                0 0 10px var(--teal),
+                0 0 20px var(--teal);
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: var(--white);
+            font-weight: 200;
+            max-width: 70%;
+        }
+        
+        .button {
+            position: relative;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 1px solid var(--teal);
+            color: var(--teal);
+            font-family: 'Bauhaus Modern', sans-serif;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 1rem;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+        
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 212, 0.2), transparent);
+            transition: all 0.5s;
+        }
+        
+        .button:hover {
+            background-color: rgba(0, 245, 212, 0.1);
+            box-shadow: 0 0 10px var(--teal), 0 0 20px var(--teal);
+        }
+        
+        .button:hover::before {
+            left: 100%;
+        }
+        
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 5rem 0;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+        
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--teal);
+        }
+        
+        .card {
+            background-color: rgba(10, 10, 18, 0.8);
+            border: 1px solid var(--violet);
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 0 20px rgba(106, 0, 244, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(106, 0, 244, 0.5);
+        }
+        
+        .torii-gate {
+            position: relative;
+            width: 100%;
+            height: 40vh;
+            margin: 4rem 0;
+            overflow: hidden;
+        }
+        
+        .torii-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-around;
+            perspective: 1000px;
+        }
+        
+        .torii {
+            width: 20%;
+            height: 80%;
+            background-color: var(--red);
+            position: relative;
+            transform-style: preserve-3d;
+            transform: translateZ(0);
+        }
+        
+        .torii::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: -10%;
+            width: 120%;
+            height: 5%;
+            background-color: var(--red);
+            box-shadow: 0 0 10px var(--red);
+        }
+        
+        .torii::after {
+            content: '';
+            position: absolute;
+            top: 5%;
+            left: -20%;
+            width: 140%;
+            height: 5%;
+            background-color: var(--red);
+            box-shadow: 0 0 10px var(--red);
+        }
+        
+        .particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        nav {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 100;
+        }
+        
+        .nav-toggle {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(10, 10, 18, 0.8);
+            border: 1px solid var(--teal);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-toggle:hover {
+            background-color: rgba(0, 245, 212, 0.1);
+            box-shadow: 0 0 10px var(--teal);
+        }
+        
+        .nav-toggle span {
+            position: relative;
+            width: 60%;
+            height: 2px;
+            background-color: var(--teal);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-toggle span::before,
+        .nav-toggle span::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: var(--teal);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-toggle span::before {
+            top: -6px;
+        }
+        
+        .nav-toggle span::after {
+            bottom: -6px;
+        }
+        
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: rgba(10, 10, 18, 0.95);
+            border-left: 1px solid var(--teal);
+            padding: 5rem 2rem;
+            transition: all 0.5s ease;
+            z-index: 99;
+        }
+        
+        .nav-menu.active {
+            right: 0;
+            box-shadow: -10px 0 30px rgba(0, 245, 212, 0.2);
+        }
+        
+        .nav-menu ul {
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin: 2rem 0;
+        }
+        
+        .nav-menu a {
+            font-family: 'Bauhaus Modern', sans-serif;
+            color: var(--white);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 1.2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--teal);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--teal);
+            text-shadow: 0 0 5px var(--teal);
+        }
+        
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+        
+        .kanji-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+            opacity: 0.1;
+        }
+        
+        .kanji {
+            position: absolute;
+            color: var(--teal);
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 3rem;
+            opacity: 0.5;
+            text-shadow: 0 0 10px var(--teal);
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 60px;
+            border: 2px solid var(--white);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            padding-top: 10px;
+        }
+        
+        .scroll-indicator::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--white);
+            animation: scrollAnim 2s infinite;
+        }
+        
+        @keyframes scrollAnim {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+        }
+        
+        .custom-scrollbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 10px;
+            height: 0;
+            background: linear-gradient(to top, var(--teal), var(--violet));
+            z-index: 98;
+        }
+        
+        .scroll-progress {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--teal), var(--violet), var(--pink));
+            z-index: 98;
+            width: 0;
+        }
+        
+        .parallax-container {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        #occult-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--black);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+        
+        .seal-container {
+            position: relative;
+            width: 80%;
+            height: 80%;
+            max-width: 800px;
+            max-height: 800px;
+        }
+        
+        .seal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            border: 2px solid var(--red);
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+        
+        .seal::before, .seal::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: transparent;
+            border: 2px solid var(--red);
+            border-radius: 50%;
+            animation: pulseAnim 3s infinite;
+        }
+        
+        .seal::before {
+            width: 60%;
+            height: 60%;
+        }
+        
+        .seal::after {
+            width: 40%;
+            height: 40%;
+            animation-delay: 1s;
+        }
+        
+        @keyframes pulseAnim {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.3;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.7;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                max-width: 90%;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Overlay Effects -->
+    <div class="overlay"></div>
+    <div class="scanlines"></div>
+    <div class="kanji-overlay" id="kanjiOverlay"></div>
+    
+    <!-- WebGL Canvas Container -->
+    <div id="canvas-container"></div>
+    
+    <!-- Particles Container -->
+    <div id="particles-js" class="particles-container"></div>
+    
+    <!-- Custom Scrollbar -->
+    <div class="custom-scrollbar" id="customScrollbar"></div>
+    <div class="scroll-progress" id="scrollProgress"></div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-toggle" id="navToggle">
+            <span></span>
+        </div>
+        <div class="nav-menu" id="navMenu">
+            <ul>
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#experience" class="nav-link">Experience</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Header Section -->
+        <header id="home" class="header">
+            <h1 class="title glitch" data-text="SPECTRAL">SPECTRAL</h1>
+            <p class="subtitle">A Cyber-Phantom Interactive Experience</p>
+            <div class="jp-text" style="font-size: 1.5rem; margin-bottom: 2rem;">霊幽電界</div>
+            <div class="buttons">
+                <button class="button"><a style="text-decoration: none; color: #e0fbfc;" href="/ghostserver">Experience it</a></button>
+                <button class="button"><a style="text-decoration: none; color: #e0fbfc;" href="/void">feel it</a></button>
+            </div>
+            <div class="scroll-indicator"></div>
+        </header>
+        
+        <!-- About Section -->
+        <section id="about" class="section">
+            <h2 class="section-title">About <span class="jp-text">について</span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="text-xl text-pink-500 mb-4">The Concept</h3>
+                    <p class="mb-4">Neon Spectral is where the supernatural meets cyberpunk. This immersive experience blends the ethereal aesthetics of Ghostwire: Tokyo with the neon brutality of Cyberpunk 2077.</p>
+                    <p>Navigate through a spiritual plane overlapping with a futuristic Tokyo, where digital yokai and corporate spirits haunt the electrified landscape.</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl text-pink-500 mb-4">The Technology</h3>
+                    <p class="mb-4">Built with cutting-edge WebGL technology, Neon Spectral pushes the boundaries of browser-based experiences.</p>
+                    <p>Featuring GPU-accelerated particle systems, procedural animations, and interactive audio design that responds to your every movement.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Experience Section -->
+        <section id="experience" class="section">
+            <h2 class="section-title">Experience <span class="jp-text">体験</span></h2>
+            <div class="torii-gate">
+                <div class="torii-container" id="toriiContainer">
+                    <div class="torii"></div>
+                    <div class="torii"></div>
+                    <div class="torii"></div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div class="card">
+                    <h3 class="text-xl text-teal-400 mb-4">Spirit Vision</h3>
+                    <p>Activate your spectral sight to reveal hidden yokai entities lurking in the digital shadows. Interact with spirits to unlock hidden messages and pathways.</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl text-teal-400 mb-4">Neon Seals</h3>
+                    <p>Draw mystical kanji seals to bind and exorcise cyber-ghosts. Each seal creates unique particle effects and sound responses.</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl text-teal-400 mb-4">Phantom Gates</h3>
+                    <p>Navigate through traditional torii gates that serve as gateways between the physical and digital realms, each revealing a new layer of the cyber-phantom world.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h2 class="section-title">Contact <span class="jp-text">連絡先</span></h2>
+            <div class="card">
+                <p class="mb-6">Ready to cross into the cyber-phantom realm? Leave your message and we'll reach out from beyond the digital veil.</p>
+                <form class="space-y-4">
+                    <div>
+                        <input type="text" placeholder="Name" class="w-full p-3 bg-transparent border border-violet-500 text-white focus:border-teal-400 focus:outline-none transition-colors duration-300">
+                    </div>
+                    <div>
+                        <input type="email" placeholder="Email" class="w-full p-3 bg-transparent border border-violet-500 text-white focus:border-teal-400 focus:outline-none transition-colors duration-300">
+                    </div>
+                    <div>
+                        <textarea placeholder="Message" rows="5" class="w-full p-3 bg-transparent border border-violet-500 text-white focus:border-teal-400 focus:outline-none transition-colors duration-300"></textarea>
+                    </div>
+                    <div>
+                        <button type="submit" class="button w-full">SEND TRANSMISSION</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="py-8 text-center opacity-70 mt-12">
+            <p>© 2023 Neon Spectral | A Cyber-Phantom Interactive Experience</p>
+            <p class="mt-2">Enter the konami code for a special surprise</p>
+        </footer>
+    </div>
+    
+    <!-- Occult Mode (Easter Egg) -->
+    <div id="occult-mode">
+        <div class="seal-container">
+            <div class="seal"></div>
+        </div>
+        <p class="text-red-500 text-xl mt-8">Draw the sealing pattern to exorcise the digital spirit</p>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // Variables
+        let scene, camera, renderer;
+        let particles = [];
+        let raycaster = new THREE.Raycaster();
+        let mouse = new THREE.Vector2();
+        let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+        
+        // Initialize Three.js Scene
+        function initThree() {
+            // Create scene
+            scene = new THREE.Scene();
+            
+            // Create camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+            
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            
+            // Create lights
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            directionalLight.position.set(0, 1, 1);
+            scene.add(directionalLight);
+            
+            // Create floating particles
+            createParticles();
+            
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize);
+            
+            // Start animation loop
+            animate();
+        }
+        
+        // Create particles
+        function createParticles() {
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = 1000;
+            
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            const sizes = new Float32Array(particleCount);
+            
+            const colorChoices = [
+                [0, 0.96, 0.83], // teal
+                [0.42, 0, 0.96], // violet
+                [1, 0, 1],       // pink
+                [1, 0, 0.24]     // red
+            ];
+            
+            for (let i = 0; i < particleCount; i++) {
+                // Position
+                positions[i * 3] = (Math.random() - 0.5) * 20;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+                
+                // Color
+                const colorIndex = Math.floor(Math.random() * colorChoices.length);
+                colors[i * 3] = colorChoices[colorIndex][0];
+                colors[i * 3 + 1] = colorChoices[colorIndex][1];
+                colors[i * 3 + 2] = colorChoices[colorIndex][2];
+                
+                // Size
+                sizes[i] = Math.random() * 0.1 + 0.05;
+                
+                // Store particle data for animation
+                particles.push({
+                    velocity: new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.01,
+                        (Math.random() - 0.5) * 0.01,
+                        (Math.random() - 0.5) * 0.01
+                    ),
+                    index: i
+                });
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.1,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particleSystem);
+        }
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Animate particles
+            const positions = scene.children[2].geometry.attributes.position.array;
+            
+            for (let i = 0; i < particles.length; i++) {
+                const particle = particles[i];
+                const idx = particle.index * 3;
+                
+                // Update position based on velocity
+                positions[idx] += particle.velocity.x;
+                positions[idx + 1] += particle.velocity.y;
+                positions[idx + 2] += particle.velocity.z;
+                
+                // Boundary check
+                if (Math.abs(positions[idx]) > 10) particle.velocity.x *= -1;
+                if (Math.abs(positions[idx + 1]) > 10) particle.velocity.y *= -1;
+                if (Math.abs(positions[idx + 2]) > 10) particle.velocity.z *= -1;
+            }
+            
+            scene.children[2].geometry.attributes.position.needsUpdate = true;
+            
+            // Rotate camera slightly based on mouse position
+            camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.05;
+            camera.position.y += (-mouse.y * 0.5 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Handle window resize
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // Track mouse movement for parallax effect
+        function onMouseMove(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            moveKanji(event);
+        }
+        
+        // Initialize Particles.js
+        function initParticlesJS() {
+            particlesJS('particles-js', {
+                particles: {
+                    number: {
+                        value: 80,
+                        density: {
+                            enable: true,
+                            value_area: 800
+                        }
+                    },
+                    color: {
+                        value: "#00f5d4"
+                    },
+                    shape: {
+                        type: "circle"
+                    },
+                    opacity: {
+                        value: 0.5,
+                        random: true
+                    },
+                    size: {
+                        value: 3,
+                        random: true
+                    },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: "#6a00f4",
+                        opacity: 0.2,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 1,
+                        direction: "none",
+                        random: true,
+                        straight: false,
+                        out_mode: "out",
+                        bounce: false
+                    }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: {
+                            enable: true,
+                            mode: "repulse"
+                        },
+                        onclick: {
+                            enable: true,
+                            mode: "push"
+                        },
+                        resize: true
+                    }
+                },
+                retina_detect: true
+            });
+        }
+        
+        // Generate random kanji characters
+        function createKanjiOverlay() {
+            const overlay = document.getElementById('kanjiOverlay');
+            const kanjiChars = '漢字文字日本語霊魂電子都市幽霊未来';
+            
+            for (let i = 0; i < 20; i++) {
+                const kanji = document.createElement('div');
+                kanji.classList.add('kanji');
+                kanji.textContent = kanjiChars[Math.floor(Math.random() * kanjiChars.length)];
+                
+                kanji.style.top = `${Math.random() * 100}%`;
+                kanji.style.left = `${Math.random() * 100}%`;
+                kanji.style.fontSize = `${Math.random() * 3 + 1}rem`;
+                kanji.style.opacity = `${Math.random() * 0.5 + 0.1}`;
+                
+                overlay.appendChild(kanji);
+            }
+        }
+        
+        // Move kanji based on mouse position
+        function moveKanji(event) {
+            const kanjis = document.querySelectorAll('.kanji');
+            const mouseX = event.clientX / window.innerWidth;
+            const mouseY = event.clientY / window.innerHeight;
+            
+            kanjis.forEach((kanji, index) => {
+                const depth = parseFloat(kanji.style.fontSize) / 4;
+                const moveX = (mouseX - 0.5) * 50 * depth;
+                const moveY = (mouseY - 0.5) * 50 * depth;
+                
+                kanji.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            });
+        }
+        
+        // Handle scroll events
+        function handleScroll() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercentage = scrollTop / scrollHeight;
+            
+            // Update custom scrollbar
+            document.getElementById('customScrollbar').style.height = `${scrollPercentage * 100}%`;
+            document.getElementById('scrollProgress').style.width = `${scrollPercentage * 100}%`;
+            
+            // Check if sections are in viewport and animate them
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (sectionTop < windowHeight * 0.75) {
+                    section.classList.add('visible');
+                }
+            });
+            
+            // Parallax effect for torii gates
+            const toriiContainer = document.getElementById('toriiContainer');
+            if (toriiContainer) {
+                const torii = toriiContainer.querySelectorAll('.torii');
+                const toriiTop = toriiContainer.getBoundingClientRect().top;
+                
+                if (toriiTop < windowHeight && toriiTop > -windowHeight) {
+                    const scrollPosition = (toriiTop / windowHeight);
+                    
+                    torii.forEach((gate, index) => {
+                        const speed = 0.1 * (index + 1);
+                        gate.style.transform = `translateZ(${scrollPosition * 100 * speed}px) rotateY(${scrollPosition * 5}deg)`;
+                    });
+                }
+            }
+        }
+        
+        // Navigation toggle
+        function setupNavigation() {
+            const navToggle = document.getElementById('navToggle');
+            const navMenu = document.getElementById('navMenu');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                });
+            });
+        }
+        
+        // Button hover effects
+        function setupButtonEffects() {
+            const buttons = document.querySelectorAll('.button');
+            
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    const audio = new Audio('https://cdn.jsdelivr.net/gh/soundbible/sfx@master/paper_flutter.mp3');
+                    audio.volume = 0.2;
+                    audio.play().catch(e => console.log('Audio play error:', e));
+                    
+                    button.classList.add('animate-pulse');
+                    
+                    // Create ink splatter effect
+                    const splatter = document.createElement('canvas');
+                    splatter.width = button.offsetWidth * 1.5;
+                    splatter.height = button.offsetHeight * 1.5;
+                    splatter.style.position = 'absolute';
+                    splatter.style.top = '-25%';
+                    splatter.style.left = '-25%';
+                    splatter.style.pointerEvents = 'none';
+                    splatter.style.zIndex = '-1';
+                    
+                    button.style.position = 'relative';
+                    button.appendChild(splatter);
+                    
+                    const ctx = splatter.getContext('2d');
+                    ctx.fillStyle = '#00f5d4';
+                    
+                    for (let i = 0; i < 20; i++) {
+                        const x = Math.random() * splatter.width;
+                        const y = Math.random() * splatter.height;
+                        const radius = Math.random() * 5 + 1;
+                        
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    
+                    // Animate the splatter
+                    gsap.to(splatter, {
+                        opacity: 0,
+                        scale: 1.5,
+                        duration: 1,
+                        onComplete: () => {
+                            splatter.remove();
+                            button.classList.remove('animate-pulse');
+                        }
+                    });
+                });
+                
+                button.addEventListener('click', () => {
+                    // Kanji seal burn effect
+                    const seal = document.createElement('div');
+                    seal.style.position = 'absolute';
+                    seal.style.top = '50%';
+                    seal.style.left = '50%';
+                    seal.style.transform = 'translate(-50%, -50%)';
+                    seal.style.width = '120%';
+                    seal.style.height = '120%';
+                    seal.style.background = 'radial-gradient(circle, rgba(255,0,60,0.3) 0%, transparent 70%)';
+                    seal.style.borderRadius = '50%';
+                    seal.style.zIndex = '-1';
+                    
+                    button.style.position = 'relative';
+                    button.appendChild(seal);
+                    
+                    gsap.to(seal, {
+                        opacity: 0,
+                        scale: 2,
+                        duration: 1,
+                        onComplete: () => {
+                            seal.remove();
+                        }
+                    });
+                });
+            });
+        }
+        
+        // Konami code detection
+        function setupKonamiCode() {
+            window.addEventListener('keydown', (e) => {
+                if (e.key === konamiCode[konamiIndex]) {
+                    konamiIndex++;
+                    
+                    if (konamiIndex === konamiCode.length) {
+                        activateOccultMode();
+                        konamiIndex = 0;
+                    }
+                } else {
+                    konamiIndex = 0;
+                }
+            });
+        }
+        
+        // Activate occult mode easter egg
+        function activateOccultMode() {
+            const occultMode = document.getElementById('occult-mode');
+            occultMode.style.display = 'flex';
+            
+            // Play ambient sound
+            const ambientSound = new Audio('https://cdn.jsdelivr.net/gh/soundbible/sfx@master/mysterious_synth.mp3');
+            ambientSound.loop = true;
+            ambientSound.volume = 0.5;
+            ambientSound.play().catch(e => console.log('Audio play error:', e));
+            
+            // Setup canvas for drawing seals
+            const sealContainer = document.querySelector('.seal-container');
+            const canvas = document.createElement('canvas');
+            canvas.width = sealContainer.offsetWidth;
+            canvas.height = sealContainer.offsetHeight;
+            canvas.style.position = 'absolute';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.zIndex = '10';
+            
+            const ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#ff003c';
+            ctx.lineWidth = 2;
+            
+            sealContainer.appendChild(canvas);
+            
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            let patternLength = 0;
+            
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            });
+            
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDrawing) {
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(e.offsetX, e.offsetY);
+                    ctx.stroke();
+                    
+                    // Create particle effect
+                    const particle = document.createElement('div');
+                    particle.style.position = 'absolute';
+                    particle.style.width = '5px';
+                    particle.style.height = '5px';
+                    particle.style.backgroundColor = '#ff003c';
+                    particle.style.borderRadius = '50%';
+                    particle.style.left = `${e.clientX}px`;
+                    particle.style.top = `${e.clientY}px`;
+                    particle.style.pointerEvents = 'none';
+                    
+                    document.body.appendChild(particle);
+                    
+                    gsap.to(particle, {
+                        opacity: 0,
+                        y: '-20px',
+                        duration: 1,
+                        onComplete: () => {
+                            particle.remove();
+                        }
+                    });
+                    
+                    [lastX, lastY] = [e.offsetX, e.offsetY];
+                    patternLength++;
+                    
+                    // Check if pattern is long enough to exit
+                    if (patternLength > 100) {
+                        exitOccultMode(ambientSound);
+                    }
+                }
+            });
+            
+            canvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+            });
+            
+            // Exit button
+            const exitButton = document.createElement('button');
+            exitButton.textContent = 'EXIT OCCULT MODE';
+            exitButton.className = 'button';
+            exitButton.style.marginTop = '20px';
+            
+            exitButton.addEventListener('click', () => {
+                exitOccultMode(ambientSound);
+            });
+            
+            occultMode.appendChild(exitButton);
+        }
+        
+        // Exit occult mode
+        function exitOccultMode(sound) {
+            const occultMode = document.getElementById('occult-mode');
+            
+            // Flash effect
+            const flash = document.createElement('div');
+            flash.style.position = 'fixed';
+            flash.style.top = '0';
+            flash.style.left = '0';
+            flash.style.width = '100%';
+            flash.style.height = '100%';
+            flash.style.backgroundColor = '#ffffff';
+            flash.style.zIndex = '300';
+            document.body.appendChild(flash);
+            
+            gsap.to(flash, {
+                opacity: 0,
+                duration: 1,
+                onComplete: () => {
+                    flash.remove();
+                    occultMode.style.display = 'none';
+                    
+                    // Remove all child elements except the seal container
+                    while (occultMode.children.length > 1) {
+                        occultMode.removeChild(occultMode.lastChild);
+                    }
+                    
+                    // Stop sound
+                    if (sound) {
+                        sound.pause();
+                        sound.currentTime = 0;
+                    }
+                }
+            });
+        }
+        
+        // Initialize everything on load
+        window.addEventListener('load', () => {
+            initThree();
+            initParticlesJS();
+            createKanjiOverlay();
+            setupNavigation();
+            setupButtonEffects();
+            setupKonamiCode();
+            
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('scroll', handleScroll);
+            
+            // Trigger initial scroll check
+            handleScroll();
+        });
+    </script>
+</body>
+</html>

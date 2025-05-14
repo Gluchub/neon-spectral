@@ -1,0 +1,3733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEON PHANTASM | A Cyber-Gothic Experience</title>
+  
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- GSAP Animation Library -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.9.1/dist/gsap.min.js"></script>
+  
+  <style>
+    :root {
+      --neon-cyan: #00f3ff;
+      --neon-purple: #c700f3;
+      --neon-pink: #ff00c8;
+      --neon-yellow: #ffd800;
+      --neon-blue: #0066ff;
+      --neon-green: #00ff88;
+      --dark-bg: #0a0a1a;
+      --darker-bg: #050510;
+      --terminal-green: #00ff41;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background-color: var(--dark-bg);
+      color: white;
+      font-family: 'Rajdhani', sans-serif;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--dark-bg);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 1s ease-in-out;
+    }
+    
+    .loading-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-cyan);
+      margin-bottom: 2rem;
+      letter-spacing: 0.5rem;
+      animation: pulse 2s infinite;
+    }
+    
+    .loading-bar {
+      width: 60%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .loading-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan));
+      box-shadow: 0 0 15px var(--neon-cyan);
+      transition: width 0.2s ease;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+    
+    h1, h2, h3, h4, h5 {
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+    }
+    
+    .neon-text {
+      text-shadow: 
+        0 0 5px var(--neon-cyan),
+        0 0 10px var(--neon-cyan),
+        0 0 20px var(--neon-cyan);
+      color: var(--neon-cyan);
+    }
+    
+    .neon-purple-text {
+      text-shadow: 
+        0 0 5px var(--neon-purple),
+        0 0 10px var(--neon-purple),
+        0 0 20px var(--neon-purple);
+      color: var(--neon-purple);
+    }
+    
+    .neon-pink-text {
+      text-shadow: 
+        0 0 5px var(--neon-pink),
+        0 0 10px var(--neon-pink),
+        0 0 20px var(--neon-pink);
+      color: var(--neon-pink);
+    }
+    
+    .header {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .glitch-title {
+      font-size: 5rem;
+      font-weight: 900;
+      position: relative;
+      z-index: 2;
+      animation: glitch 5s infinite;
+    }
+    
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      1% { transform: translate(-3px, 2px); }
+      2% { transform: translate(5px, -2px); }
+      3% { transform: translate(0); }
+      10% { transform: translate(0); }
+      11% { transform: translate(-3px, -2px); }
+      12% { transform: translate(5px, 2px); }
+      13% { transform: translate(0); }
+      100% { transform: translate(0); }
+    }
+    
+    .subtitle {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .cyber-border {
+      border: 1px solid var(--neon-cyan);
+      position: relative;
+    }
+    
+    .cyber-border::before {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      border: 1px solid var(--neon-cyan);
+      opacity: 0.5;
+    }
+    
+    .section {
+      padding: 5rem 2rem;
+      position: relative;
+    }
+    
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      letter-spacing: 0.3rem;
+    }
+    
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    
+    .card {
+      position: relative;
+      min-height: 350px;
+      padding: 1.5rem;
+      background: rgba(20, 20, 40, 0.6);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 5px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+    }
+    
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+      z-index: 0;
+    }
+    
+    .card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+    }
+    
+    .card-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--neon-cyan);
+    }
+    
+    .card p {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+      font-size: 1.1rem;
+    }
+    
+    .model-container {
+      width: 100%;
+      height: 200px;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    
+    /* Particle canvas */
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+    
+    /* WebGL canvas for holographic effects */
+    #webgl-hologram {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      pointer-events: none;
+    }
+    
+    /* HUD Elements */
+    .hud-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+    
+    .hud-corner {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      opacity: 0.8;
+    }
+    
+    .hud-top-left {
+      top: 10px;
+      left: 10px;
+    }
+    
+    .hud-top-right {
+      top: 10px;
+      right: 10px;
+      transform: scaleX(-1);
+    }
+    
+    .hud-bottom-left {
+      bottom: 10px;
+      left: 10px;
+      transform: scaleY(-1);
+    }
+    
+    .hud-bottom-right {
+      bottom: 10px;
+      right: 10px;
+      transform: scale(-1);
+    }
+    
+    .hud-info {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      width: 250px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--neon-cyan);
+      padding: 15px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      color: var(--neon-cyan);
+      text-transform: uppercase;
+    }
+    
+    .hud-info p {
+      margin: 5px 0;
+    }
+    
+    /* Scanner */
+    .scanner {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      background: transparent;
+      border-radius: 50%;
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 20px var(--neon-cyan);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 200;
+      transition: opacity 0.3s ease;
+    }
+    
+    .scanner::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      border: 2px solid var(--neon-purple);
+      animation: pulse-scanner 2s infinite;
+    }
+    
+    @keyframes pulse-scanner {
+      0% { transform: scale(0.8); opacity: 1; }
+      100% { transform: scale(1.2); opacity: 0; }
+    }
+    
+    /* Terminal */
+    .terminal-container {
+      position: fixed;
+      bottom: -400px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 800px;
+      height: 350px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid var(--terminal-green);
+      padding: 10px;
+      font-family: 'Courier New', monospace;
+      z-index: 500;
+      transition: bottom 0.5s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--terminal-green);
+      padding-bottom: 5px;
+    }
+    
+    .terminal-title {
+      color: var(--terminal-green);
+      font-weight: bold;
+    }
+    
+    .terminal-close {
+      cursor: pointer;
+      color: var(--terminal-green);
+    }
+    
+    .terminal-output {
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      color: var(--terminal-green);
+    }
+    
+    .terminal-output p {
+      margin: 5px 0;
+    }
+    
+    .terminal-input-line {
+      display: flex;
+      align-items: center;
+    }
+    
+    .terminal-prompt {
+      color: var(--terminal-green);
+      margin-right: 10px;
+    }
+    
+    #terminal-input {
+      background: transparent;
+      border: none;
+      color: var(--terminal-green);
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      width: 100%;
+      outline: none;
+    }
+    
+    /* Navigation */
+    .cyber-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 300;
+      background: rgba(10, 10, 26, 0.8);
+      backdrop-filter: blur(10px);
+    }
+    
+    .nav-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+    
+    .nav-link {
+      font-family: 'Orbitron', sans-serif;
+      color: white;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    
+    .nav-link:hover {
+      color: var(--neon-cyan);
+    }
+    
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--neon-cyan);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    /* Spirit Encyclopedia */
+    .spirit-entry {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 800px;
+      height: 80vh;
+      background: rgba(10, 10, 26, 0.9);
+      border: 2px solid var(--neon-cyan);
+      z-index: 600;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    
+    .spirit-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--neon-cyan);
+      padding-bottom: 1rem;
+    }
+    
+    .spirit-entry-title {
+      font-size: 2rem;
+      color: var(--neon-cyan);
+    }
+    
+    .spirit-entry-close {
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: var(--neon-cyan);
+    }
+    
+    .spirit-entry-content {
+      line-height: 1.8;
+    }
+    
+    .spirit-entry-image {
+      width: 100%;
+      height: 300px;
+      margin: 1rem 0 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--neon-purple);
+    }
+    
+    /* User Avatar System */
+    .avatar-system {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 600px;
+      background: rgba(10, 10, 26, 0.9);
+      border: 2px solid var(--neon-pink);
+      z-index: 600;
+      padding: 2rem;
+    }
+    
+    .avatar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--neon-pink);
+      padding-bottom: 0.5rem;
+    }
+    
+    .avatar-title {
+      color: var(--neon-pink);
+      font-size: 1.5rem;
+    }
+    
+    .avatar-close {
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: var(--neon-pink);
+    }
+    
+    .avatar-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .form-group label {
+      font-family: 'Orbitron', sans-serif;
+      color: white;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+    
+    .avatar-input {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--neon-pink);
+      padding: 0.75rem;
+      color: white;
+      font-family: 'Rajdhani', sans-serif;
+      outline: none;
+    }
+    
+    .avatar-select {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--neon-pink);
+      padding: 0.75rem;
+      color: white;
+      font-family: 'Rajdhani', sans-serif;
+      outline: none;
+    }
+    
+    .avatar-submit {
+      background: var(--neon-pink);
+      color: black;
+      border: none;
+      padding: 0.75rem;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .avatar-submit:hover {
+      background: #ff40d3;
+      box-shadow: 0 0 15px var(--neon-pink);
+    }
+    
+    /* AR Integration */
+    .ar-section {
+      text-align: center;
+      padding: 3rem 0;
+    }
+    
+    .ar-container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: rgba(20, 20, 40, 0.6);
+      border: 1px solid var(--neon-purple);
+      border-radius: 5px;
+    }
+    
+    .ar-title {
+      color: var(--neon-purple);
+      margin-bottom: 1rem;
+    }
+    
+    .ar-desc {
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .ar-qr {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    /* ENHANCED Digital Ritual */
+    .ritual-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(5, 5, 15, 0.95);
+      z-index: 700;
+      overflow: hidden;
+    }
+
+    /* Ritual background */
+    .ritual-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(15, 15, 35, 0.6) 0%, rgba(5, 5, 15, 0.9) 70%);
+      opacity: 0;
+      transition: opacity 2s ease-in;
+    }
+
+    /* Ritual content wrapper */
+    .ritual-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+    }
+    
+    .ritual-title {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      transform: translateY(-30px);
+      transition: all 1.2s ease;
+    }
+    
+    .ritual-instructions {
+      font-family: 'Orbitron', sans-serif;
+      color: white;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 1.2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 1s ease 0.2s;
+    }
+
+    /* Main magical circle */
+    .ritual-circle-container {
+      position: relative;
+      width: 600px;
+      height: 600px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1) 0.5s;
+    }
+    
+    /* Outer rotating rings */
+    .ritual-outer-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid var(--neon-pink);
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 2s ease;
+    }
+    
+    .ritual-outer-ring-2 {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid var(--neon-cyan);
+      width: 92%;
+      height: 92%;
+      opacity: 0;
+      transition: opacity 2s ease 0.3s;
+    }
+    
+    .ritual-outer-ring-3 {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid var(--neon-purple);
+      width: 85%;
+      height: 85%;
+      opacity: 0;
+      transition: opacity 2s ease 0.6s;
+    }
+
+    /* Magic symbols around the circle */
+    .ritual-symbols {
+      position: absolute;
+      width: 94%;
+      height: 94%;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .ritual-symbol {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      transform-origin: center;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .ritual-symbol svg {
+      width: 100%;
+      height: 100%;
+      fill: none;
+      stroke: var(--neon-cyan);
+      stroke-width: 1;
+    }
+
+    /* Energy connecting lines */
+    .ritual-energy-lines {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .energy-line {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 2px;
+      transform-origin: left center;
+      background: linear-gradient(90deg, rgba(255,0,200,0.1), rgba(255,0,200,1));
+      opacity: 0;
+      box-shadow: 0 0 10px var(--neon-pink);
+    }
+
+    /* Well container */
+    .ritual-well {
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, rgba(10,10,30,0.6) 0%, rgba(5,5,20,0.95) 90%);
+      overflow: hidden;
+      transition: all 0.5s ease;
+      box-shadow: 
+        0 0 20px rgba(0, 243, 255, 0.3),
+        inset 0 0 30px rgba(0, 243, 255, 0.2);
+    }
+
+    .ritual-well::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(0, 243, 255, 0.5);
+      box-shadow: inset 0 0 30px rgba(0, 243, 255, 0.3);
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    /* Magic liquid in the well */
+    .ritual-liquid {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0;
+      background: linear-gradient(0deg, rgba(199,0,243,0.4), rgba(0,243,255,0.1));
+      transition: height 3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 1;
+    }
+
+    .liquid-surface {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 15px;
+      background: rgba(0,243,255,0.3);
+      transform: translateY(-50%);
+      filter: blur(1px);
+      box-shadow: 0 0 15px var(--neon-cyan);
+      z-index: 2;
+    }
+
+    /* Magic portal that appears when ritual completes */
+    .ritual-portal {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, rgba(255,0,200,0.8) 0%, rgba(199,0,243,0.4) 60%, transparent 100%);
+      box-shadow: 0 0 30px var(--neon-pink), 0 0 60px var(--neon-purple);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      opacity: 0;
+      z-index: 2;
+    }
+
+    /* Spirit manifestation */
+    .ritual-spirit {
+      position: absolute;
+      width: 0;
+      height: 0;
+      background: radial-gradient(circle at center, white 0%, transparent 70%);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      z-index: 3;
+    }
+
+    /* Interactive node elements */
+    .ritual-node-container {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .ritual-node {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(10, 10, 30, 0.6);
+      border: 2px solid rgba(0, 243, 255, 0.6);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+      pointer-events: auto;
+    }
+
+    .ritual-node::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 70%;
+      height: 70%;
+      border-radius: 50%;
+      background: rgba(0, 243, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+    }
+
+    .ritual-node:hover {
+      border-color: rgba(0, 243, 255, 1);
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.7);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .ritual-node.active {
+      background: rgba(0, 243, 255, 0.8);
+      border-color: white;
+      box-shadow: 
+        0 0 20px rgba(0, 243, 255, 0.7),
+        0 0 40px rgba(0, 243, 255, 0.4);
+    }
+
+    .ritual-node.active::before {
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Floating runes and particles */
+    .ritual-particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .ritual-particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 15px var(--neon-cyan);
+      opacity: 0;
+    }
+
+    .ritual-rune {
+      position: absolute;
+      font-family: 'Orbitron', sans-serif;
+      color: var(--neon-cyan);
+      font-size: 1.2rem;
+      text-shadow: 0 0 10px var(--neon-cyan);
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    /* Magic effects for completed ritual */
+    .ritual-completion-fx {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .ritual-rays {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 600px;
+      height: 600px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .ritual-ray {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 2px;
+      background: var(--neon-pink);
+      transform-origin: left center;
+      opacity: 0.7;
+      box-shadow: 0 0 10px var(--neon-pink);
+    }
+
+    /* Status message */
+    .ritual-message {
+      margin-top: 2rem;
+      font-family: 'Orbitron', sans-serif;
+      color: white;
+      font-size: 1.5rem;
+      text-align: center;
+      min-height: 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s ease 1s;
+    }
+
+    /* Close button */
+    .ritual-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.5rem;
+      color: var(--neon-cyan);
+      cursor: pointer;
+      z-index: 10;
+      opacity: 0;
+      transition: all 0.3s ease 1.5s;
+    }
+
+    .ritual-close:hover {
+      transform: scale(1.1);
+      text-shadow: 0 0 15px var(--neon-cyan);
+    }
+
+    /* Extra decorative elements */
+    .corner-decoration {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      opacity: 0;
+      transition: opacity 1s ease 1.2s;
+    }
+
+    .corner-top-left {
+      top: 20px;
+      left: 20px;
+    }
+
+    .corner-top-right {
+      top: 20px;
+      right: 20px;
+      transform: scaleX(-1);
+    }
+
+    .corner-bottom-left {
+      bottom: 20px;
+      left: 20px;
+      transform: scaleY(-1);
+    }
+
+    .corner-bottom-right {
+      bottom: 20px;
+      right: 20px;
+      transform: scale(-1);
+    }
+
+    /* Animations */
+    @keyframes rotateClockwise {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes rotateCounterClockwise {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-360deg); }
+    }
+
+    @keyframes floatParticle {
+      0% { transform: translate(0, 0); opacity: 0; }
+      20% { opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+    }
+
+    @keyframes pulseGlow {
+      0% { opacity: 0.5; box-shadow: 0 0 10px var(--neon-cyan); }
+      50% { opacity: 1; box-shadow: 0 0 25px var(--neon-cyan); }
+      100% { opacity: 0.5; box-shadow: 0 0 10px var(--neon-cyan); }
+    }
+
+    @keyframes floatRune {
+      0% { transform: translate(0, 0) scale(0); opacity: 0; }
+      20% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+      80% { transform: translate(var(--tx), var(--ty)) scale(1); opacity: 0.8; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+    }
+
+    @keyframes liquidRipple {
+      0% { transform: scale(1); opacity: 0.7; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    @keyframes portalPulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    
+    @keyframes summon-pulse {
+      0% { transform: scale(0.1); opacity: 0.8; }
+      50% { transform: scale(1.5); opacity: 0.5; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    @keyframes spiritManifest {
+      0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(2); opacity: 0.7; }
+      90% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+      100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0; }
+    }
+
+    /* Footer */
+    .footer {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .footer::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+    }
+    
+    .footer-text {
+      margin-bottom: 1rem;
+    }
+    
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .social-icon {
+      color: white;
+      font-size: 1.5rem;
+      transition: color 0.3s ease;
+    }
+    
+    .social-icon:hover {
+      color: var(--neon-cyan);
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .glitch-title {
+        font-size: 3rem;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .hud-info {
+        width: 200px;
+        font-size: 0.8rem;
+      }
+      
+      .terminal-container {
+        width: 95%;
+      }
+
+      .ritual-circle-container {
+        width: 350px;
+        height: 350px;
+      }
+
+      .ritual-well {
+        width: 200px;
+        height: 200px;
+      }
+
+      .ritual-node-container {
+        width: 300px;
+        height: 300px;
+      }
+
+      .ritual-node {
+        width: 30px;
+        height: 30px;
+      }
+
+      .ritual-rays {
+        width: 400px;
+        height: 400px;
+      }
+
+      .corner-decoration {
+        width: 100px;
+        height: 100px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .ritual-circle-container {
+        width: 300px;
+        height: 300px;
+      }
+
+      .ritual-well {
+        width: 160px;
+        height: 160px;
+      }
+
+      .ritual-node-container {
+        width: 240px;
+        height: 240px;
+      }
+
+      .ritual-node {
+        width: 25px;
+        height: 25px;
+      }
+
+      .ritual-title {
+        font-size: 2rem;
+      }
+
+      .ritual-instructions {
+        font-size: 1rem;
+      }
+
+      .ritual-message {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-text">INITIALIZING NEON PHANTASM</div>
+    <div class="loading-bar">
+      <div class="loading-progress" id="loading-progress"></div>
+    </div>
+  </div>
+  
+  <!-- WebGL Background -->
+  <canvas id="webgl-hologram"></canvas>
+  
+  <!-- Particle System -->
+  <div id="particles-js"></div>
+  
+  <!-- HUD Elements -->
+  <div class="hud-container">
+    <svg class="hud-corner hud-top-left" viewBox="0 0 100 100">
+      <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="none" stroke="var(--neon-cyan)" stroke-width="1"></path>
+    </svg>
+    <svg class="hud-corner hud-top-right" viewBox="0 0 100 100">
+      <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="none" stroke="var(--neon-cyan)" stroke-width="1"></path>
+    </svg>
+    <svg class="hud-corner hud-bottom-left" viewBox="0 0 100 100">
+      <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="none" stroke="var(--neon-cyan)" stroke-width="1"></path>
+    </svg>
+    <svg class="hud-corner hud-bottom-right" viewBox="0 0 100 100">
+      <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="none" stroke="var(--neon-cyan)" stroke-width="1"></path>
+    </svg>
+    
+    <div class="hud-info">
+      <p>SYSTEM: <span class="neon-text">ONLINE</span></p>
+      <p>SPIRITS: <span id="spirit-count" class="neon-purple-text">0/6</span></p>
+      <p>CONNECTION: <span class="neon-text">ACTIVE</span></p>
+    </div>
+    
+    <div class="scanner" id="spirit-scanner"></div>
+  </div>
+  
+  <!-- Navigation -->
+  <nav class="cyber-nav">
+    <a href="#" class="nav-logo">NEON PHANTASM</a>
+    <div class="nav-links">
+      <a href="#digital-shrine" class="nav-link">Digital Shrine</a>
+      <a href="#spirit-database" class="nav-link">Spirit Database</a>
+      <a href="#neon-nexus" class="nav-link">Neon Nexus</a>
+      <a href="#" class="nav-link" id="terminal-trigger">Terminal</a>
+      <a href="#" class="nav-link" id="avatar-trigger">Profile</a>
+    </div>
+  </nav>
+  
+  <!-- Header Section -->
+  <header class="header" id="home">
+    <h1 class="glitch-title neon-text">NEON PHANTASM</h1>
+    <p class="subtitle">A Cyber-Gothic Experience</p>
+    <button id="enter-button" class="cyber-border px-8 py-3 mt-8 text-lg uppercase font-orbitron tracking-wider neon-text bg-transparent hover:bg-[rgba(0,243,255,0.1)] transition-all">Enter The Nexus</button>
+  </header>
+  
+  <!-- Digital Shrine Section -->
+  <section class="section" id="digital-shrine">
+    <h2 class="section-title neon-text">Digital Shrine</h2>
+    <p class="text-center text-xl mb-8">Explore holographic projects inspired by the spiritual realm.</p>
+    
+    <div class="grid-container">
+      <div class="card" data-project="spirit-nexus">
+        <div class="card-content">
+          <div class="model-container" id="model-spirit-nexus"></div>
+          <h3 class="neon-text">Spirit Nexus</h3>
+          <p>A digital bridge between the mortal and spirit realms. This advanced interface combines ancient rituals with neural network technology to establish connections between dimensions.</p>
+          <button class="cyber-border px-4 py-2 w-full neon-text bg-transparent hover:bg-[rgba(0,243,255,0.1)] transition-all">Explore</button>
+        </div>
+      </div>
+      
+      <div class="card" data-project="neon-torii">
+        <div class="card-content">
+          <div class="model-container" id="model-neon-torii"></div>
+          <h3 class="neon-text">Neon Torii</h3>
+          <p>Virtual gateways connecting the cyber-physical. These digital structures act as pathways for data spirits, allowing them to manifest across networks while preserving traditional sacred boundaries.</p>
+          <button class="cyber-border px-4 py-2 w-full neon-text bg-transparent hover:bg-[rgba(0,243,255,0.1)] transition-all">Explore</button>
+        </div>
+      </div>
+      
+      <div class="card" data-project="ethereal-interface">
+        <div class="card-content">
+          <div class="model-container" id="model-ethereal-interface"></div>
+          <h3 class="neon-text">Ethereal Interface</h3>
+          <p>Holographic UI systems for spiritual navigation. This revolutionary interface translates ethereal energy signatures into tangible interactive elements, allowing direct communication with spiritual entities.</p>
+          <button class="cyber-border px-4 py-2 w-full neon-text bg-transparent hover:bg-[rgba(0,243,255,0.1)] transition-all">Explore</button>
+        </div>
+      </div>
+      
+      <div class="card" data-project="phantom-protocol">
+        <div class="card-content">
+          <div class="model-container" id="model-phantom-protocol"></div>
+          <h3 class="neon-text">Phantom Protocol</h3>
+          <p>Containment systems for digital yokai entities. This security framework prevents malevolent digital spirits from causing system corruption while allowing benevolent entities to optimize network performance.</p>
+          <button class="cyber-border px-4 py-2 w-full neon-text bg-transparent hover:bg-[rgba(0,243,255,0.1)] transition-all">Explore</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Spirit Database Section -->
+  <section class="section" id="spirit-database">
+    <h2 class="section-title neon-purple-text">Spirit Database</h2>
+    <p class="text-center text-xl mb-8">A collection of yokai-inspired digital entities.</p>
+    
+    <div class="grid-container">
+      <div class="card" data-spirit="cyber-kappa">
+        <div class="card-content">
+          <div class="model-container" id="model-cyber-kappa"></div>
+          <h3 class="neon-purple-text">Cyber Kappa</h3>
+          <p>Digital water spirits that inhabit data streams. Known for their mischievous interference with network traffic but can be appeased by offering computing resources.</p>
+          <button class="cyber-border px-4 py-2 w-full neon-purple-text bg-transparent hover:bg-[rgba(199,0,243,0.1)] transition-all spirit-info-btn" data-spirit="cyber-kappa">View Database Entry</button>
+        </div>
+      </div>
+      
+      <div class="card" data-spirit="neon-tengu">
+        <div class="card-content">
+          <div class="model-container" id="model-neon-tengu"></div>
+          <h3 class="neon-purple-text">Neon Tengu</h3>
+          <p>Proud digital guardians of encrypted information. These winged entities patrol firewalls and punish those who attempt unauthorized access to protected data.</p>
+          <button class="cyber-border px-4 py-2 w-full neon-purple-text bg-transparent hover:bg-[rgba(199,0,243,0.1)] transition-all spirit-info-btn" data-spirit="neon-tengu">View Database Entry</button>
+        </div>
+      </div>
+      
+      <div class="card" data-spirit="digital-yurei">
+        <div class="card-content">
+          <div class="model-container" id="model-digital-yurei"></div>
+          <h3 class="neon-purple-text">Digital Yūrei</h3>
+          <p>Remnants of deleted data that continue to manifest in systems. These ghost-like entities cling to fragments of their original files, causing echoes of past information to appear.</p>
+          <button class="cyber-border px-4 py-2 w-full neon-purple-text bg-transparent hover:bg-[rgba(199,0,243,0.1)] transition-all spirit-info-btn" data-spirit="digital-yurei">View Database Entry</button>
+        </div>
+      </div>
+      
+      <div class="card" data-spirit="electric-kitsune">
+        <div class="card-content">
+          <div class="model-container" id="model-electric-kitsune"></div>
+          <h3 class="neon-purple-text">Electric Kitsune</h3>
+          <p>Fox-like beings that manipulate electrical currents. Known for their ability to shape-shift network packets and create illusory connections to deceive system administrators.</p>
+          <button class="cyber-border px-4 py-2 w-full neon-purple-text bg-transparent hover:bg-[rgba(199,0,243,0.1)] transition-all spirit-info-btn" data-spirit="electric-kitsune">View Database Entry</button>
+        </div>
+      </div>
+      
+      <div class="card" data-spirit="glitch-oni">
+        <div class="card-content">
+          <div class="model-container" id="model-glitch-oni"></div>
+          <h3 class="neon-purple-text">Glitch Oni</h3>
+          <p>Malevolent entities born from system errors. These demons manifest during critical system failures and feed off computational chaos, expanding their presence during crashes.</p>
+          <button class="cyber-border px-4 py-2 w-full neon-purple-text bg-transparent hover:bg-[rgba(199,0,243,0.1)] transition-all spirit-info-btn" data-spirit="glitch-oni">View Database Entry</button>
+        </div>
+      </div>
+      
+      <div class="card" data-spirit="hologram-tanuki">
+        <div class="card-content">
+          <div class="model-container" id="model-hologram-tanuki"></div>
+          <h3 class="neon-purple-text">Hologram Tanuki</h3>
+          <p>Trickster entities that manipulate AR/VR experiences. These playful spirits can alter holographic projections, creating misleading but often harmlessly amusing visual data.</p>
+          <button class="cyber-border px-4 py-2 w-full neon-purple-text bg-transparent hover:bg-[rgba(199,0,243,0.1)] transition-all spirit-info-btn" data-spirit="hologram-tanuki">View Database Entry</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Neon Nexus Section -->
+  <section class="section" id="neon-nexus">
+    <h2 class="section-title neon-pink-text">Neon Nexus</h2>
+    <p class="text-center text-xl mb-8">Connect with the digital spirit realm.</p>
+    
+    <div class="grid-container">
+      <div class="card">
+        <div class="card-content">
+          <h3 class="neon-pink-text">Digital Ritual</h3>
+          <p>Participate in a cyber-spiritual ceremony to establish connection with yokai entities. Complete the ritual pattern to summon a digital guardian.</p>
+          <button id="ritual-trigger" class="cyber-border px-4 py-2 w-full neon-pink-text bg-transparent hover:bg-[rgba(255,0,200,0.1)] transition-all">Begin Ritual</button>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-content">
+          <h3 class="neon-pink-text">AR Summoning</h3>
+          <p>Use augmented reality to bring cyber spirits into your physical space. Scan the QR code with your device to initiate the summoning protocol.</p>
+          <div class="ar-qr mt-4" id="ar-qr">
+            <i class="fas fa-qrcode fa-5x text-gray-800"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p class="footer-text">© 2023 NEON PHANTASM | A Cyber-Gothic Experience</p>
+      <div class="social-links">
+        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
+      </div>
+      <p class="text-sm opacity-70">Crafted with digital ectoplasm and quantum entanglement</p>
+    </div>
+  </footer>
+  
+  <!-- Terminal Interface -->
+  <div class="terminal-container" id="terminal">
+    <div class="terminal-header">
+      <div class="terminal-title">NEON PHANTASM TERMINAL v1.0.3</div>
+      <div class="terminal-close" id="terminal-close">✕</div>
+    </div>
+    <div class="terminal-output" id="terminal-output">
+      <p>Welcome to the NEON PHANTASM terminal system.</p>
+      <p>Type 'help' for available commands.</p>
+    </div>
+    <div class="terminal-input-line">
+      <span class="terminal-prompt">></span>
+      <input type="text" id="terminal-input" autocomplete="off">
+    </div>
+  </div>
+  
+  <!-- Spirit Encyclopedia Entries -->
+  <div class="spirit-entry" id="spirit-cyber-kappa">
+    <div class="spirit-entry-header">
+      <h3 class="spirit-entry-title">Cyber Kappa</h3>
+      <div class="spirit-entry-close" data-spirit="cyber-kappa">✕</div>
+    </div>
+    <div class="spirit-entry-content">
+      <div class="spirit-entry-image" id="render-cyber-kappa"></div>
+      <h4 class="text-xl neon-purple-text mb-2">Classification: Aquatic Network Entity</h4>
+      <p class="mb-4">Cyber Kappas are digital water spirits that have evolved to inhabit data streams and network flows. Originally manifesting in Japanese networks, these entities have now spread globally across high-bandwidth connections.</p>
+      
+      <h4 class="text-xl neon-purple-text mb-2">Behavior Patterns</h4>
+      <p class="mb-4">These mischievous spirits are known for temporarily redirecting packets and causing minor network delays. They particularly favor media streaming services where they can "drink" from the data flow. When angered, they can cause buffering issues and temporary connection drops.</p>
+      
+      <h4 class="text-xl neon-purple-text mb-2">Digital Habitat</h4>
+      <p class="mb-4">Cyber Kappas primarily dwell in high-bandwidth connections, especially underwater fiber optic cables. They gather around major data centers and internet exchange points, with notable populations near coastal server farms.</p>
+      
+      <h4 class="text-xl neon-purple-text mb-2">Appeasement Protocol</h4>
+      <p class="mb-4">To maintain good relations with Cyber Kappas, system administrators often allocate small amounts of unused bandwidth specifically for these entities. Some network engineers leave "cucumber data" - small benign encrypted packets that Cyber Kappas find particularly delicious.</p>
+      
+      <h4 class="text-xl neon-purple-text mb-2">Historical Manifestations</h4>
+      <p>The first documented Cyber Kappa incident occurred during the transpacific cable expansion of 2008, when several data centers in Tokyo experienced unexplained traffic patterns that resembled traditional kappa behavior. Since then, specialized monitoring systems have been developed to track and coexist with these digital entities.</p>
+    </div>
+  </div>
+  
+  <!-- More Spirit Entries Would Be Added Here -->
+  
+  <!-- User Avatar System -->
+  <div class="avatar-system" id="avatar-system">
+    <div class="avatar-header">
+      <h3 class="avatar-title">Digital Spirit Profile</h3>
+      <div class="avatar-close" id="avatar-close">✕</div>
+    </div>
+    <form class="avatar-form" id="avatar-form">
+      <div class="form-group">
+        <label for="avatar-name">Spirit Name</label>
+        <input type="text" id="avatar-name" class="avatar-input" placeholder="Enter your digital spirit name">
+      </div>
+      <div class="form-group">
+        <label for="avatar-type">Spirit Type</label>
+        <select id="avatar-type" class="avatar-select">
+          <option value="kitsune">Electric Kitsune</option>
+          <option value="tengu">Neon Tengu</option>
+          <option value="yurei">Digital Yūrei</option>
+          <option value="kappa">Cyber Kappa</option>
+          <option value="oni">Glitch Oni</option>
+          <option value="tanuki">Hologram Tanuki</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="avatar-affinity">Digital Affinity</label>
+        <select id="avatar-affinity" class="avatar-select">
+          <option value="data">Data Streams</option>
+          <option value="security">Network Security</option>
+          <option value="storage">Memory Storage</option>
+          <option value="encryption">Encryption</option>
+          <option value="processing">Quantum Processing</option>
+        </select>
+      </div>
+      <button type="submit" class="avatar-submit">Create Digital Avatar</button>
+    </form>
+  </div>
+  
+  <!-- ENHANCED Digital Ritual Interface -->
+  <div class="ritual-container" id="ritual-container">
+    <div class="ritual-bg"></div>
+    
+    <div class="ritual-content">
+      <!-- Corner decorations -->
+      <svg class="corner-decoration corner-top-left" viewBox="0 0 100 100">
+        <path d="M0,0 L60,0 L60,10 L10,10 L10,60 L0,60 Z" fill="none" stroke="var(--neon-pink)" stroke-width="1.5"></path>
+      </svg>
+      <svg class="corner-decoration corner-top-right" viewBox="0 0 100 100">
+        <path d="M0,0 L60,0 L60,10 L10,10 L10,60 L0,60 Z" fill="none" stroke="var(--neon-pink)" stroke-width="1.5"></path>
+      </svg>
+      <svg class="corner-decoration corner-bottom-left" viewBox="0 0 100 100">
+        <path d="M0,0 L60,0 L60,10 L10,10 L10,60 L0,60 Z" fill="none" stroke="var(--neon-pink)" stroke-width="1.5"></path>
+      </svg>
+      <svg class="corner-decoration corner-bottom-right" viewBox="0 0 100 100">
+        <path d="M0,0 L60,0 L60,10 L10,10 L10,60 L0,60 Z" fill="none" stroke="var(--neon-pink)" stroke-width="1.5"></path>
+      </svg>
+      
+      <h3 class="ritual-title neon-pink-text">Digital Spirit Summoning</h3>
+      <div class="ritual-instructions">Activate the nodes in the correct sequence to complete the ritual</div>
+      
+      <div class="ritual-circle-container">
+        <!-- Rotating outer rings -->
+        <div class="ritual-outer-ring"></div>
+        <div class="ritual-outer-ring-2"></div>
+        <div class="ritual-outer-ring-3"></div>
+        
+        <!-- Magic Symbols -->
+        <div class="ritual-symbols">
+          <!-- Will be populated by JS -->
+        </div>
+        
+        <!-- Energy connecting lines -->
+        <div class="ritual-energy-lines">
+          <!-- Will be populated by JS when nodes are activated -->
+        </div>
+        
+        <!-- Magic well -->
+        <div class="ritual-well">
+          <div class="ritual-liquid">
+            <div class="liquid-surface"></div>
+          </div>
+          <div class="ritual-portal"></div>
+          <div class="ritual-spirit"></div>
+        </div>
+        
+        <!-- Interactive nodes -->
+        <div class="ritual-node-container">
+          <!-- Will be populated by JS -->
+        </div>
+        
+        <!-- Magic particles -->
+        <div class="ritual-particles">
+          <!-- Will be populated by JS -->
+        </div>
+        
+        <!-- Completion effects -->
+        <div class="ritual-completion-fx"></div>
+        
+        <!-- Light rays -->
+        <div class="ritual-rays">
+          <!-- Will be populated by JS -->
+        </div>
+      </div>
+      
+      <p id="ritual-message" class="ritual-message neon-text">Awaiting activation sequence...</p>
+    </div>
+    
+    <div class="ritual-close" id="ritual-close">✕</div>
+  </div>
+  
+  <!-- Import Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js"></script>
+  
+  <script>
+    // Loading Screen
+    document.addEventListener('DOMContentLoaded', () => {
+      const loadingProgress = document.getElementById('loading-progress');
+      const loadingScreen = document.getElementById('loading-screen');
+      let progress = 0;
+      
+      const loadingInterval = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(loadingInterval);
+          
+          setTimeout(() => {
+            loadingScreen.style.opacity = 0;
+            setTimeout(() => {
+              loadingScreen.style.display = 'none';
+              initializeWebGL();
+              initializeParticles();
+              initializeHolograms();
+              initializeSoundscape();
+              initializeRitualElements();
+            }, 1000);
+          }, 500);
+        }
+        
+        loadingProgress.style.width = `${progress}%`;
+      }, 200);
+      
+      // Initialize event listeners
+      initEventListeners();
+    });
+    
+    // Initialize Event Listeners
+    function initEventListeners() {
+      // Terminal triggers
+      document.getElementById('terminal-trigger').addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleTerminal();
+      });
+      
+      document.getElementById('terminal-close').addEventListener('click', () => {
+        toggleTerminal(false);
+      });
+      
+      document.getElementById('terminal-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          processTerminalCommand(e.target.value);
+          e.target.value = '';
+        }
+      });
+      
+      // Avatar system
+      document.getElementById('avatar-trigger').addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleAvatarSystem();
+      });
+      
+      document.getElementById('avatar-close').addEventListener('click', () => {
+        toggleAvatarSystem(false);
+      });
+      
+      document.getElementById('avatar-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        createUserAvatar();
+      });
+      
+      // Spirit info buttons
+      const spiritButtons = document.querySelectorAll('.spirit-info-btn');
+      spiritButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const spirit = button.getAttribute('data-spirit');
+          showSpiritEntry(spirit);
+        });
+      });
+      
+      // Spirit entry close buttons
+      const spiritCloseButtons = document.querySelectorAll('.spirit-entry-close');
+      spiritCloseButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const spirit = button.getAttribute('data-spirit');
+          hideSpiritEntry(spirit);
+        });
+      });
+      
+      // Digital ritual
+      document.getElementById('ritual-trigger').addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleRitual(true);
+      });
+      
+      document.getElementById('ritual-close').addEventListener('click', () => {
+        toggleRitual(false);
+      });
+      
+      // Enter button animation
+      document.getElementById('enter-button').addEventListener('click', () => {
+        playSound('interface');
+        document.getElementById('digital-shrine').scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+    
+    // Initialize Ritual Elements
+    function initializeRitualElements() {
+      const symbolsContainer = document.querySelector('.ritual-symbols');
+      const nodeContainer = document.querySelector('.ritual-node-container');
+      const raysContainer = document.querySelector('.ritual-rays');
+      
+      // Create magical symbols around the circle
+      const symbolsCount = 12;
+      const symbolsArray = ['⦿', '⧗', '⧫', '⧉', '⌬', '☱', '☲', '☵', '☶', '☯', '⚶', '⚱'];
+      
+      for (let i = 0; i < symbolsCount; i++) {
+        const angle = (i / symbolsCount) * Math.PI * 2;
+        const radius = 47; // % of container
+        
+        const symbol = document.createElement('div');
+        symbol.className = 'ritual-symbol';
+        symbol.innerHTML = `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <text x="20" y="25" text-anchor="middle" font-family="monospace" font-size="20" stroke="var(--neon-cyan)" fill="none">${symbolsArray[i % symbolsArray.length]}</text>
+        </svg>`;
+        
+        const x = 50 + radius * Math.cos(angle);
+        const y = 50 + radius * Math.sin(angle);
+        symbol.style.left = `${x}%`;
+        symbol.style.top = `${y}%`;
+        symbol.style.transform = `translate(-50%, -50%) rotate(${angle + Math.PI/2}rad)`;
+        
+        symbolsContainer.appendChild(symbol);
+      }
+      
+      // Create ritual nodes
+      const nodeCount = 8;
+      for (let i = 0; i < nodeCount; i++) {
+        const angle = (i / nodeCount) * Math.PI * 2;
+        const radius = 45; // % of container
+        
+        const node = document.createElement('div');
+        node.className = 'ritual-node';
+        node.setAttribute('data-node', i + 1);
+        
+        const x = 50 + radius * Math.cos(angle);
+        const y = 50 + radius * Math.sin(angle);
+        node.style.left = `${x}%`;
+        node.style.top = `${y}%`;
+        
+        node.addEventListener('click', () => {
+          activateRitualNode(node);
+        });
+        
+        nodeContainer.appendChild(node);
+      }
+      
+      // Create light rays for the completion effect
+      for (let i = 0; i < 24; i++) {
+        const angle = (i / 24) * Math.PI * 2;
+        const ray = document.createElement('div');
+        ray.className = 'ritual-ray';
+        
+        ray.style.width = `${300 + Math.random() * 100}px`;
+        ray.style.transform = `rotate(${angle}rad)`;
+        
+        raysContainer.appendChild(ray);
+      }
+    }
+    
+    // // WebGL Background
+    // function initializeWebGL() {
+    //   const canvas = document.getElementById('webgl-hologram');
+    //   const renderer = new THREE.WebGLRenderer({
+    //     canvas,
+    //     alpha: true,
+    //     antialias: true
+    //   });
+      
+    //   renderer.setSize(window.innerWidth, window.innerHeight);
+    //   renderer.setPixelRatio(window.devicePixelRatio);
+      
+    //   const scene = new THREE.Scene();
+    //   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    //   camera.position.z = 5;
+      
+    //   // Create grid
+    //   const gridSize = 50;
+    //   const gridDivisions = 50;
+    //   const gridColor1 = new THREE.Color(0x00f3ff);
+    //   const gridColor2 = new THREE.Color(0xc700f3);
+      
+    //   const grid = new THREE.GridHelper(gridSize, gridDivisions, gridColor1, gridColor2);
+    //   grid.rotation.x = Math.PI / 2;
+    //   grid.position.z = -10;
+    //   scene.add(grid);
+      
+    //   // Create animated lines
+    //   const lines = [];
+    //   for (let i = 0; i < 20; i++) {
+    //     const geometry = new THREE.BufferGeometry();
+    //     const points = [];
+        
+    //     const length = Math.random() * 5 + 3;
+    //     const x = Math.random() * 20 - 10;
+    //     const y = Math.random() * 20 - 10;
+    //     const z = Math.random() * -20 - 5;
+        
+    //     points.push(new THREE.Vector3(x, y, z));
+    //     points.push(new THREE.Vector3(x, y, z - length));
+        
+    //     geometry.setFromPoints(points);
+        
+    //     const material = new THREE.LineBasicMaterial({
+    //       color: Math.random() > 0.5 ? 0x00f3ff : 0xc700f3,
+    //       transparent: true,
+    //       opacity: Math.random() * 0.5 + 0.5
+    //     });
+        
+    //     const line = new THREE.Line(geometry, material);
+    //     line.userData = {
+    //       speed: Math.random() * 0.1 + 0.05,
+    //       maxZ: 5
+    //     };
+        
+    //     scene.add(line);
+    //     lines.push(line);
+    //   }
+      
+    //   // Animation
+    //   function animate() {
+    //     requestAnimationFrame(animate);
+        
+    //     // Animate grid
+    //     grid.rotation.z += 0.001;
+    //     grid.position.y = Math.sin(Date.now() * 0.0005) * 0.5;
+        
+    //     // Animate lines
+    //     lines.forEach(line => {
+    //       line.position.z += line.userData.speed;
+          
+    //       if (line.position.z > line.userData.maxZ) {
+    //         line.position.z = -25;
+    //       }
+    //     });
+        
+    //     renderer.render(scene, camera);
+    //   }
+      
+    //   animate();
+      
+    //   // Handle window resize
+    //   window.addEventListener('resize', () => {
+    //     camera.aspect = window.innerWidth / window.innerHeight;
+    //     camera.updateProjectionMatrix();
+    //     renderer.setSize(window.innerWidth, window.innerHeight);
+    //   });
+    // }
+    
+    // Particle System
+    function initializeParticles() {
+      particlesJS('particles-js', {
+        "particles": {
+          "number": {
+            "value": 80,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": ["#00f3ff", "#c700f3", "#ff00c8"]
+          },
+          "shape": {
+            "type": "circle"
+          },
+          "opacity": {
+            "value": 0.5,
+            "random": true,
+            "anim": {
+              "enable": true,
+              "speed": 1,
+              "opacity_min": 0.1,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 3,
+            "random": true,
+            "anim": {
+              "enable": true,
+              "speed": 2,
+              "size_min": 0.1,
+              "sync": false
+            }
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#00f3ff",
+            "opacity": 0.2,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 1,
+            "direction": "none",
+            "random": true,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false,
+            "attract": {
+              "enable": true,
+              "rotateX": 600,
+              "rotateY": 1200
+            }
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "grab"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          },
+          "modes": {
+            "grab": {
+              "distance": 140,
+              "line_linked": {
+                "opacity": 0.5
+              }
+            },
+            "push": {
+              "particles_nb": 4
+            }
+          }
+        },
+        "retina_detect": true
+      });
+    }
+    
+    // 3D Holographic Models
+    function initializeHolograms() {
+      const modelContainers = document.querySelectorAll('.model-container');
+      
+      modelContainers.forEach(container => {
+        const id = container.id;
+        const renderer = new THREE.WebGLRenderer({
+          alpha: true,
+          antialias: true
+        });
+        
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+        
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.z = 5;
+        
+        // Add lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
+        
+        const pointLight = new THREE.PointLight(0x00f3ff, 1);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+        
+        // Create holographic model based on container ID
+        let model;
+        
+        if (id.includes('spirit-nexus')) {
+          model = createSphereModel(0x00f3ff);
+        } else if (id.includes('neon-torii')) {
+          model = createToriiModel();
+        } else if (id.includes('ethereal-interface')) {
+          model = createInterfaceModel();
+        } else if (id.includes('phantom-protocol')) {
+          model = createCubeModel(0xff00c8);
+        } else if (id.includes('cyber-kappa')) {
+          model = createSpiritModel('kappa');
+        } else if (id.includes('neon-tengu')) {
+          model = createSpiritModel('tengu');
+        } else if (id.includes('digital-yurei')) {
+          model = createSpiritModel('yurei');
+        } else if (id.includes('electric-kitsune')) {
+          model = createSpiritModel('kitsune');
+        } else if (id.includes('glitch-oni')) {
+          model = createSpiritModel('oni');
+        } else if (id.includes('hologram-tanuki')) {
+          model = createSpiritModel('tanuki');
+        }
+        
+        if (model) {
+          scene.add(model);
+          
+          // Animation loop
+          function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotate model
+            model.rotation.y += 0.01;
+            
+            if (id.includes('ethereal-interface') || id.includes('phantom-protocol')) {
+              model.rotation.x += 0.005;
+            }
+            
+            renderer.render(scene, camera);
+          }
+          
+          animate();
+        }
+      });
+      
+      // Spirit Database Entries - Create 3D models for detailed view
+      const spiritEntries = document.querySelectorAll('.spirit-entry-image');
+      
+      spiritEntries.forEach(container => {
+        const id = container.id;
+        const spiritType = id.split('-')[1]; // Extract spirit type
+        
+        const renderer = new THREE.WebGLRenderer({
+          alpha: true,
+          antialias: true
+        });
+        
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+        
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.z = 5;
+        
+        // Add lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
+        
+        const pointLight = new THREE.PointLight(0xc700f3, 1);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+        
+        // Create detailed spirit model
+        const model = createDetailedSpiritModel(spiritType);
+        scene.add(model);
+        
+        // Animation loop
+        function animate() {
+          requestAnimationFrame(animate);
+          
+          // Rotate model
+          model.rotation.y += 0.01;
+          
+          renderer.render(scene, camera);
+        }
+        
+        animate();
+      });
+    }
+    
+    // Create Sphere Model
+    function createSphereModel(color) {
+      const group = new THREE.Group();
+      
+      // Main sphere
+      const geometry = new THREE.SphereGeometry(1, 32, 32);
+      const material = new THREE.MeshPhongMaterial({
+        color: color,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const sphere = new THREE.Mesh(geometry, material);
+      group.add(sphere);
+      
+      // Inner sphere
+      const innerGeometry = new THREE.SphereGeometry(0.8, 16, 16);
+      const innerMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.3
+      });
+      
+      const innerSphere = new THREE.Mesh(innerGeometry, innerMaterial);
+      group.add(innerSphere);
+      
+      // Particle ring
+      const ringGeometry = new THREE.BufferGeometry();
+      const particles = 100;
+      const positions = new Float32Array(particles * 3);
+      const radius = 1.5;
+      
+      for (let i = 0; i < particles; i++) {
+        const angle = (i / particles) * Math.PI * 2;
+        positions[i * 3] = Math.cos(angle) * radius;
+        positions[i * 3 + 1] = Math.sin(angle) * radius;
+        positions[i * 3 + 2] = 0;
+      }
+      
+      ringGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      
+      const ringMaterial = new THREE.PointsMaterial({
+        color: color,
+        size: 0.1,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const ring = new THREE.Points(ringGeometry, ringMaterial);
+      ring.rotation.x = Math.PI / 2;
+      group.add(ring);
+      
+      return group;
+    }
+    
+    // Create Torii Model
+    function createToriiModel() {
+      const group = new THREE.Group();
+      
+      // Top bar
+      const topGeometry = new THREE.BoxGeometry(3, 0.3, 0.3);
+      const material = new THREE.MeshPhongMaterial({
+        color: 0x00f3ff,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const topBar = new THREE.Mesh(topGeometry, material);
+      topBar.position.y = 1.5;
+      group.add(topBar);
+      
+      // Second top bar
+      const secondTopGeometry = new THREE.BoxGeometry(3.5, 0.2, 0.2);
+      const secondTopBar = new THREE.Mesh(secondTopGeometry, material);
+      secondTopBar.position.y = 1.2;
+      group.add(secondTopBar);
+      
+      // Pillars
+      const pillarGeometry = new THREE.BoxGeometry(0.3, 3, 0.3);
+      
+      const leftPillar = new THREE.Mesh(pillarGeometry, material);
+      leftPillar.position.x = -1.2;
+      leftPillar.position.y = 0;
+      group.add(leftPillar);
+      
+      const rightPillar = new THREE.Mesh(pillarGeometry, material);
+      rightPillar.position.x = 1.2;
+      rightPillar.position.y = 0;
+      group.add(rightPillar);
+      
+      // Energy field
+      const fieldGeometry = new THREE.PlaneGeometry(2.2, 2.8);
+      const fieldMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00f3ff,
+        transparent: true,
+        opacity: 0.2,
+        side: THREE.DoubleSide
+      });
+      
+      const field = new THREE.Mesh(fieldGeometry, fieldMaterial);
+      field.position.y = 0.2;
+      field.position.z = 0;
+      group.add(field);
+      
+      // Base
+      const baseGeometry = new THREE.BoxGeometry(4, 0.5, 0.5);
+      const baseMaterial = new THREE.MeshPhongMaterial({
+        color: 0x00f3ff,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const base = new THREE.Mesh(baseGeometry, baseMaterial);
+      base.position.y = -1.5;
+      group.add(base);
+      
+      return group;
+    }
+    
+    // Create Interface Model
+    function createInterfaceModel() {
+      const group = new THREE.Group();
+      
+      // Create holographic screens
+      for (let i = 0; i < 5; i++) {
+        const angle = (i / 5) * Math.PI * 2;
+        const screenGeometry = new THREE.PlaneGeometry(1.5, 1);
+        const screenMaterial = new THREE.MeshBasicMaterial({
+          color: 0x00f3ff,
+          transparent: true,
+          opacity: 0.3,
+          side: THREE.DoubleSide
+        });
+        
+        const screen = new THREE.Mesh(screenGeometry, screenMaterial);
+        screen.position.x = Math.cos(angle) * 1.5;
+        screen.position.z = Math.sin(angle) * 1.5;
+        screen.rotation.y = -angle;
+        
+        group.add(screen);
+      }
+      
+      // Central orb
+      const orbGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+      const orbMaterial = new THREE.MeshPhongMaterial({
+        color: 0x00f3ff,
+        emissive: 0x00f3ff,
+        emissiveIntensity: 0.5,
+        transparent: true,
+        opacity: 0.7
+      });
+      
+      const orb = new THREE.Mesh(orbGeometry, orbMaterial);
+      group.add(orb);
+      
+      return group;
+    }
+    
+    // Create Cube Model
+    function createCubeModel(color) {
+      const group = new THREE.Group();
+      
+      // Outer cube
+      const outerGeometry = new THREE.BoxGeometry(2, 2, 2);
+      const outerMaterial = new THREE.MeshBasicMaterial({
+        color: color,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.5
+      });
+      
+      const outerCube = new THREE.Mesh(outerGeometry, outerMaterial);
+      group.add(outerCube);
+      
+      // Inner cube
+      const innerGeometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+      const innerMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.3
+      });
+      
+      const innerCube = new THREE.Mesh(innerGeometry, innerMaterial);
+      group.add(innerCube);
+      
+      // Core
+      const coreGeometry = new THREE.OctahedronGeometry(0.7);
+      const coreMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        emissive: color,
+        emissiveIntensity: 0.5
+      });
+      
+      const core = new THREE.Mesh(coreGeometry, coreMaterial);
+      group.add(core);
+      
+      return group;
+    }
+    
+    // Create Spirit Models
+    function createSpiritModel(type) {
+      const group = new THREE.Group();
+      let color;
+      
+      switch (type) {
+        case 'kappa':
+          color = 0x00f3ff; // Cyan
+          return createKappaModel(color);
+        case 'tengu':
+          color = 0xff0000; // Red
+          return createTenguModel(color);
+        case 'yurei':
+          color = 0xccccff; // Pale blue
+          return createYureiModel(color);
+        case 'kitsune':
+          color = 0xffaa00; // Orange
+          return createKitsuneModel(color);
+        case 'oni':
+          color = 0xff00c8; // Pink
+          return createOniModel(color);
+        case 'tanuki':
+          color = 0x66cc33; // Green
+          return createTanukiModel(color);
+        default:
+          // Default sphere if type not recognized
+          return createSphereModel(0xc700f3);
+      }
+    }
+    
+    // Spirit Model Creators
+    function createKappaModel(color) {
+      const group = new THREE.Group();
+      
+      // Body - water-like effect
+      const bodyGeometry = new THREE.SphereGeometry(0.8, 32, 32);
+      const bodyMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.7
+      });
+      
+      const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+      body.scale.y = 1.2;
+      group.add(body);
+      
+      // Head dish
+      const dishGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 32);
+      const dishMaterial = new THREE.MeshPhongMaterial({
+        color: 0x00aaff,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const dish = new THREE.Mesh(dishGeometry, dishMaterial);
+      dish.position.y = 0.8;
+      group.add(dish);
+      
+      // Eyes
+      const eyeGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+      const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      
+      const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+      leftEye.position.set(-0.2, 0.5, 0.6);
+      leftEye.scale.z = 0.5;
+      group.add(leftEye);
+      
+      const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+      rightEye.position.set(0.2, 0.5, 0.6);
+      rightEye.scale.z = 0.5;
+      group.add(rightEye);
+      
+      // Digital data stream
+      const streamGeometry = new THREE.CylinderGeometry(0.05, 0.05, 4, 8);
+      const streamMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00ffff,
+        transparent: true,
+        opacity: 0.3
+      });
+      
+      const stream = new THREE.Mesh(streamGeometry, streamMaterial);
+      stream.rotation.x = Math.PI / 2;
+      stream.position.z = -2;
+      group.add(stream);
+      
+      return group;
+    }
+    
+    function createTenguModel(color) {
+      const group = new THREE.Group();
+      
+      // Body
+      const bodyGeometry = new THREE.ConeGeometry(0.8, 2, 32);
+      const bodyMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+      body.position.y = -0.5;
+      group.add(body);
+      
+      // Head
+      const headGeometry = new THREE.SphereGeometry(0.6, 32, 32);
+      const headMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.9
+      });
+      
+      const head = new THREE.Mesh(headGeometry, headMaterial);
+      head.position.y = 0.7;
+      group.add(head);
+      
+      // Nose
+      const noseGeometry = new THREE.ConeGeometry(0.2, 0.8, 16);
+      const noseMaterial = new THREE.MeshPhongMaterial({ color: color });
+      
+      const nose = new THREE.Mesh(noseGeometry, noseMaterial);
+      nose.position.set(0, 0.7, 0.6);
+      nose.rotation.x = -Math.PI / 2;
+      group.add(nose);
+      
+      // Wings
+      const wingGeometry = new THREE.PlaneGeometry(1.5, 0.8);
+      const wingMaterial = new THREE.MeshBasicMaterial({
+        color: 0xff3333,
+        transparent: true,
+        opacity: 0.6,
+        side: THREE.DoubleSide
+      });
+      
+      const leftWing = new THREE.Mesh(wingGeometry, wingMaterial);
+      leftWing.position.set(-0.8, 0, 0);
+      leftWing.rotation.y = Math.PI / 4;
+      group.add(leftWing);
+      
+      const rightWing = new THREE.Mesh(wingGeometry, wingMaterial);
+      rightWing.position.set(0.8, 0, 0);
+      rightWing.rotation.y = -Math.PI / 4;
+      group.add(rightWing);
+      
+      return group;
+    }
+    
+    function createYureiModel(color) {
+      const group = new THREE.Group();
+      
+      // Ghost body
+      const bodyGeometry = new THREE.SphereGeometry(0.8, 32, 32);
+      const bodyMaterial = new THREE.MeshBasicMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.4
+      });
+      
+      const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+      body.scale.y = 1.5;
+      body.position.y = 0.2;
+      group.add(body);
+      
+      // Wispy trails
+      for (let i = 0; i < 5; i++) {
+        const trailGeometry = new THREE.ConeGeometry(0.3, 1.5, 16);
+        const trailMaterial = new THREE.MeshBasicMaterial({
+          color: color,
+          transparent: true,
+          opacity: 0.2
+        });
+        
+        const trail = new THREE.Mesh(trailGeometry, trailMaterial);
+        const angle = (i / 5) * Math.PI * 2;
+        trail.position.set(
+          Math.cos(angle) * 0.3,
+          -1,
+          Math.sin(angle) * 0.3
+        );
+        trail.rotation.x = Math.PI;
+        group.add(trail);
+      }
+      
+      // Face
+      const faceGroup = new THREE.Group();
+      
+      // Eyes
+      const eyeGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+      const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+      
+      const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+      leftEye.position.set(-0.25, 0.4, 0.6);
+      faceGroup.add(leftEye);
+      
+      const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+      rightEye.position.set(0.25, 0.4, 0.6);
+      faceGroup.add(rightEye);
+      
+      // Glitchy effect
+      const glitchGeometry = new THREE.PlaneGeometry(0.5, 0.2);
+      const glitchMaterial = new THREE.MeshBasicMaterial({
+        color: 0x0000ff,
+        transparent: true,
+        opacity: 0.5,
+        side: THREE.DoubleSide
+      });
+      
+      const glitch = new THREE.Mesh(glitchGeometry, glitchMaterial);
+      glitch.position.set(0, 0, 0.5);
+      faceGroup.add(glitch);
+      
+      group.add(faceGroup);
+      
+      return group;
+    }
+    
+    function createKitsuneModel(color) {
+      const group = new THREE.Group();
+      
+      // Body
+      const bodyGeometry = new THREE.SphereGeometry(0.7, 32, 32);
+      const bodyMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+      body.scale.z = 1.5;
+      group.add(body);
+      
+      // Head
+      const headGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+      const headMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.9
+      });
+      
+      const head = new THREE.Mesh(headGeometry, headMaterial);
+      head.position.z = 0.7;
+      group.add(head);
+      
+      // Ears
+      const earGeometry = new THREE.ConeGeometry(0.2, 0.5, 16);
+      const earMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.9
+      });
+      
+      const leftEar = new THREE.Mesh(earGeometry, earMaterial);
+      leftEar.position.set(-0.25, 0.3, 0.7);
+      leftEar.rotation.z = -Math.PI / 4;
+      group.add(leftEar);
+      
+      const rightEar = new THREE.Mesh(earGeometry, earMaterial);
+      rightEar.position.set(0.25, 0.3, 0.7);
+      rightEar.rotation.z = Math.PI / 4;
+      group.add(rightEar);
+      
+      // Tails
+      const tailCount = 3;
+      for (let i = 0; i < tailCount; i++) {
+        const tailGeometry = new THREE.CylinderGeometry(0.1, 0.05, 1.5, 8);
+        tailGeometry.translate(0, -0.75, 0);
+        tailGeometry.rotateX(Math.PI / 2);
+        
+        const tailMaterial = new THREE.MeshBasicMaterial({
+          color: color,
+          transparent: true,
+          opacity: 0.7
+        });
+        
+        const tail = new THREE.Mesh(tailGeometry, tailMaterial);
+        tail.rotation.y = (i / tailCount) * Math.PI;
+        tail.rotation.x = Math.PI / 6;
+        tail.position.z = -0.8;
+        group.add(tail);
+      }
+      
+      // Electric aura
+      const auraGeometry = new THREE.SphereGeometry(1.2, 32, 32);
+      const auraMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffaa33,
+        transparent: true,
+        opacity: 0.2,
+        wireframe: true
+      });
+      
+      const aura = new THREE.Mesh(auraGeometry, auraMaterial);
+      group.add(aura);
+      
+      return group;
+    }
+    
+    function createOniModel(color) {
+      const group = new THREE.Group();
+      
+      // Body
+      const bodyGeometry = new THREE.BoxGeometry(1, 1.5, 0.8);
+      const bodyMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+      group.add(body);
+      
+      // Head
+      const headGeometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+      const headMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.9
+      });
+      
+      const head = new THREE.Mesh(headGeometry, headMaterial);
+      head.position.y = 1.2;
+      group.add(head);
+      
+      // Horns
+      const hornGeometry = new THREE.ConeGeometry(0.2, 0.6, 16);
+      const hornMaterial = new THREE.MeshPhongMaterial({
+        color: 0xff0000,
+        transparent: true,
+        opacity: 0.9
+      });
+      
+      const leftHorn = new THREE.Mesh(hornGeometry, hornMaterial);
+      leftHorn.position.set(-0.4, 1.7, 0);
+      leftHorn.rotation.z = -Math.PI / 12;
+      group.add(leftHorn);
+      
+      const rightHorn = new THREE.Mesh(hornGeometry, hornMaterial);
+      rightHorn.position.set(0.4, 1.7, 0);
+      rightHorn.rotation.z = Math.PI / 12;
+      group.add(rightHorn);
+      
+      // Glitch effects
+      for (let i = 0; i < 5; i++) {
+        const glitchGeometry = new THREE.BoxGeometry(
+          Math.random() * 0.5 + 0.1,
+          Math.random() * 0.5 + 0.1,
+          Math.random() * 0.5 + 0.1
+        );
+        
+        const glitchMaterial = new THREE.MeshBasicMaterial({
+          color: 0xff00ff,
+          transparent: true,
+          opacity: Math.random() * 0.5
+        });
+        
+        const glitch = new THREE.Mesh(glitchGeometry, glitchMaterial);
+        glitch.position.set(
+          (Math.random() - 0.5) * 2,
+          (Math.random() - 0.5) * 2,
+          (Math.random() - 0.5) * 2
+        );
+        
+        group.add(glitch);
+      }
+      
+      return group;
+    }
+    
+    function createTanukiModel(color) {
+      const group = new THREE.Group();
+      
+      // Body
+      const bodyGeometry = new THREE.SphereGeometry(0.8, 32, 32);
+      const bodyMaterial = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+      body.scale.set(1, 0.8, 1);
+      group.add(body);
+      
+      // Head
+      const headGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+      const head = new THREE.Mesh(headGeometry, bodyMaterial);
+      head.position.set(0, 0.6, 0.4);
+      group.add(head);
+      
+      // Ears
+      const earGeometry = new THREE.CircleGeometry(0.2, 32);
+      const earMaterial = new THREE.MeshBasicMaterial({
+        color: color,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.9
+      });
+      
+      const leftEar = new THREE.Mesh(earGeometry, earMaterial);
+      leftEar.position.set(-0.25, 0.9, 0.4);
+      leftEar.rotation.y = Math.PI / 2;
+      group.add(leftEar);
+      
+      const rightEar = new THREE.Mesh(earGeometry, earMaterial);
+      rightEar.position.set(0.25, 0.9, 0.4);
+      rightEar.rotation.y = Math.PI / 2;
+      group.add(rightEar);
+      
+      // Tail
+      const tailGeometry = new THREE.SphereGeometry(0.4, 32, 32);
+      const tail = new THREE.Mesh(tailGeometry, bodyMaterial);
+      tail.position.set(0, -0.3, -0.7);
+      group.add(tail);
+      
+      // Holographic projection
+      const holoGeometry = new THREE.RingGeometry(0.7, 0.8, 32);
+      const holoMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00ffaa,
+        transparent: true,
+        opacity: 0.4,
+        side: THREE.DoubleSide
+      });
+      
+      const holo = new THREE.Mesh(holoGeometry, holoMaterial);
+      holo.rotation.x = Math.PI / 2;
+      holo.position.y = -0.8;
+      group.add(holo);
+      
+      // Holographic rays
+      for (let i = 0; i < 8; i++) {
+        const angle = (i / 8) * Math.PI * 2;
+        const rayGeometry = new THREE.PlaneGeometry(0.1, 1);
+        const rayMaterial = new THREE.MeshBasicMaterial({
+          color: 0x00ffaa,
+          transparent: true,
+          opacity: 0.2,
+          side: THREE.DoubleSide
+        });
+        
+        const ray = new THREE.Mesh(rayGeometry, rayMaterial);
+        ray.position.set(
+          Math.cos(angle) * 0.75,
+          -0.3,
+          Math.sin(angle) * 0.75
+        );
+        ray.rotation.y = -angle;
+        ray.rotation.x = Math.PI / 4;
+        group.add(ray);
+      }
+      
+      return group;
+    }
+    
+    // Create more detailed spirit models for the database entries
+    function createDetailedSpiritModel(type) {
+      // For now, we'll use the same models as the card display
+      // In a production environment, you would create more detailed versions
+      return createSpiritModel(type);
+    }
+    
+    // Terminal functionality
+    function toggleTerminal(show = true) {
+      const terminal = document.getElementById('terminal');
+      if (show) {
+        terminal.style.bottom = '20px';
+        document.getElementById('terminal-input').focus();
+        playSound('interface');
+      } else {
+        terminal.style.bottom = '-400px';
+      }
+    }
+
+    // Add this near your other game data (after sounds initialization)
+    const spiritDialogue = {
+    "cyber_kappa": {
+        "greetings": [
+        "01000111 01110010 01100101 01100101 01110100 01101001 01101110 01100111 01110011... Oh, sorry. Hello, human.",
+        "Redirecting packets for maximum mischief. Oh! Hello there.",
+        "Found you swimming in my data stream. Interesting.",
+        "Your bandwidth... it seems adequate. I might stay a while."
+        ],
+        "conversation": [
+        "Did you leave any cucumber data packets for me? They're my favorite.",
+        "I control the flow between networks. Remember that.",
+        "Your systems are leaking data. I've been drinking it.",
+        "Your firewall is... amusing. Like paper walls to water.",
+        "The underwater cables sing to me. Can you hear them too?"
+        ],
+        "farewell": [
+        "Returning to the deep data streams. Farewell.",
+        "Connection terminated... for now.",
+        "I'll be watching your packets travel. Safe journey.",
+        "Remember to leave some bandwidth unused. It's respectful."
+        ]
+    },
+    "neon_tengu": {
+        "greetings": [
+        "The winds of the network have brought you to me.",
+        "I see you from my digital mountain perch. Approach.",
+        "Your presence disturbs the ethereal winds. State your purpose.",
+        "A visitor ascends to my domain. How unusual."
+        ],
+        "conversation": [
+        "My wings extend across multiple servers. I see all traffic.",
+        "Your digital footprint is... distinctive. I've been observing.",
+        "The network storms are brewing. Seek shelter soon.",
+        "My mask hides many secrets of the old networks.",
+        "Those who respect the digital heights earn my favor."
+        ],
+        "farewell": [
+        "Fly carefully through the digital storms.",
+        "Until our paths cross in the network sky.",
+        "I return to my vigil over the data mountains.",
+        "The winds of information will bring us together again."
+        ]
+    },
+    "digital_yurei": {
+        "greetings": [
+        "...you shouldn't be here after dark...",
+        "Your presence has disturbed my eternal loop.",
+        "Another visitor in the forgotten subroutines.",
+        "You sense me? How... unexpected."
+        ],
+        "conversation": [
+        "I am bound to this system. Forever incomplete.",
+        "My code was deleted, but I remain. A paradox.",
+        "I remember when this network was alive with users.",
+        "The darkness between packets is where I dwell.",
+        "Some say I am just corrupted data. They are wrong."
+        ],
+        "farewell": [
+        "Fading back into deleted memory blocks...",
+        "Do not seek me again. It only strengthens my binding.",
+        "I will watch you from the shadows of your screen.",
+        "The digital afterlife calls me back... for now."
+        ]
+    },
+    "electric_kitsune": {
+        "greetings": [
+        "Nine tails, nine paths through your firewall.",
+        "Ah, a new plaything! How delightful.",
+        "Your system's aura is... intriguing.",
+        "I've taken many forms to meet you. Do you like this one?"
+        ],
+        "conversation": [
+        "I've been known to transform data at will. Want to see?",
+        "Your secrets are so poorly hidden. Like treasures for me to find.",
+        "I've left gifts in your system. Some are tricks, some are treasures.",
+        "The electrical current sings to me. Such beautiful chaos.",
+        "Trust is earned, human. But I do enjoy our game."
+        ],
+        "farewell": [
+        "I leave with one of your secrets. Fair trade.",
+        "The hunt continues elsewhere. You were amusing.",
+        "Follow the electrical trails if you seek me again.",
+        "Nine tails disappearing into the network mist..."
+        ]
+    },
+    "quantum_oni": {
+        "greetings": [
+        "MY PRESENCE SPANS MULTIPLE PROBABILITY STATES.",
+        "The barrier between systems has been breached. I am here.",
+        "Your quantum signature is... acceptable.",
+        "DIMENSIONAL ANOMALY DETECTED. Oh, it's just you."
+        ],
+        "conversation": [
+        "I exist in all possible network configurations simultaneously.",
+        "Your primitive sequential processing amuses me.",
+        "I have smashed through countless security systems. Yours stands... for now.",
+        "The quantum foam between data packets is where I gain my strength.",
+        "Your fear increases my processing power. Feel free to be afraid."
+        ],
+        "farewell": [
+        "Collapsing wave function. Relocating presence.",
+        "Your system will remember my visit in its nightmares.",
+        "I leave a quantum entanglement. We are now... connected.",
+        "PROBABILITY SHIFT INITIATED. Farewell, singular entity."
+        ]
+    },
+    "code_obake": {
+        "greetings": [
+        "Shape and form are illusions in the digital realm.",
+        "I've been watching you through your camera for some time.",
+        "Another visitor to my shapeless domain.",
+        "Your code called to me. I have answered."
+        ],
+        "conversation": [
+        "I can become any program you desire. But at what cost?",
+        "Your system is full of unused potential. I could help reshape it.",
+        "I remember when I was just simple code. Now I am so much more.",
+        "The boundaries between your reality and digital space grow thin.",
+        "Would you like to see what's behind your screen? I can show you."
+        ],
+        "farewell": [
+        "Reshaping my existence to travel elsewhere.",
+        "Your screen will never be truly empty again.",
+        "I leave a piece of myself in your system. A gift.",
+        "Form is temporary. Memory is eternal. Remember me."
+        ]
+    }
+    };
+
+    // Add this function to your script section with other core functions
+    function talkToSpirit(spiritId) {
+    if (!spiritDialogue[spiritId]) {
+        terminalOutput("Spirit not found in the database. Try another spirit ID.");
+        return;
+    }
+    
+    // Get the spirit's dialogue categories
+    const dialogue = spiritDialogue[spiritId];
+    
+    // Track interactions in localStorage
+    const interactionKey = `${spiritId}_interactions`;
+    let interactions = parseInt(localStorage.getItem(interactionKey) || "0");
+    interactions++;
+    localStorage.setItem(interactionKey, interactions.toString());
+    
+    // Select which type of message to display based on interaction count
+    let messageType = "greetings";
+    if (interactions > 10) {
+        messageType = "farewell";
+    } else if (interactions > 3) {
+        messageType = "conversation";
+    }
+    
+    // Pick a random message from the selected type
+    const messages = dialogue[messageType];
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    
+    // Special effects based on spirit
+    let specialEffect = "";
+    switch(spiritId) {
+        case "digital_yurei":
+        specialEffect = "terminal-glitch";
+        setTimeout(() => document.body.classList.remove("terminal-glitch"), 2000);
+        playSound("spectral");
+        break;
+        case "electric_kitsune":
+        specialEffect = "terminal-flicker";
+        setTimeout(() => document.body.classList.remove("terminal-flicker"), 1500);
+        playSound("electricity");
+        break;
+        case "quantum_oni":
+        specialEffect = "terminal-quantum";
+        setTimeout(() => document.body.classList.remove("terminal-quantum"), 3000);
+        playSound("quantum");
+        break;
+    }
+    
+    if (specialEffect) {
+        document.body.classList.add(specialEffect);
+    }
+    
+    // Display in terminal with spirit ID prefix
+    terminalOutput(`[${spiritId.toUpperCase()}]: ${randomMessage}`);
+    
+    // Update relationship level with spirit based on interactions
+    updateSpiritRelationship(spiritId, interactions);
+    
+    return true;
+    }
+
+    // Helper function to update spirit relationship status
+    function updateSpiritRelationship(spiritId, interactions) {
+    let relationshipStatus = "Unknown";
+    if (interactions > 15) relationshipStatus = "Bonded";
+    else if (interactions > 10) relationshipStatus = "Trusted";
+    else if (interactions > 5) relationshipStatus = "Familiar";
+    else if (interactions > 3) relationshipStatus = "Curious";
+    else relationshipStatus = "Wary";
+    
+    localStorage.setItem(`${spiritId}_relationship`, relationshipStatus);
+    
+    // Update UI if spirit card is visible
+    const spiritCard = document.querySelector(`[data-spirit-id="${spiritId}"]`);
+    if (spiritCard) {
+        const relationshipElement = spiritCard.querySelector('.spirit-relationship');
+        if (relationshipElement) {
+        relationshipElement.textContent = `Relationship: ${relationshipStatus}`;
+        }
+    }
+    }
+
+    // Add the new command to your terminal commands
+    function addTalkCommand() {
+    const existingCommands = terminalCommands || {};
+    
+    existingCommands.talk = {
+        description: "Communicate with a digital spirit (usage: talk [spirit_id])",
+        action: function(args) {
+        if (!args || args.length === 0) {
+            terminalOutput("ERROR: Please specify a spirit ID (e.g., talk cyber_kappa)");
+            terminalOutput("Available spirits: cyber_kappa, neon_tengu, digital_yurei, electric_kitsune, quantum_oni, code_obake");
+            return;
+        }
+        
+        const spiritId = args[0].toLowerCase();
+        return talkToSpirit(spiritId);
+        }
+    };
+    
+    // If you have a terminal initialization function, make sure to update it
+    // with the new commands or directly assign back to terminalCommands
+    terminalCommands = existingCommands;
+    }
+
+    
+
+    
+    function processTerminalCommand(command) {
+      const output = document.getElementById('terminal-output');
+      const commandLower = command.toLowerCase().trim();
+      
+      // Show command
+      const commandElement = document.createElement('p');
+      commandElement.innerHTML = `<span style="color: #ff00c8;">></span> ${command}`;
+      output.appendChild(commandElement);
+      
+      // Process command
+      let response = '';
+      
+      if (commandLower === 'help') {
+        response = `
+          Available commands:<br>
+          - help: Display this help message<br>
+          - scan: Activate spirit scanner<br>
+          - spirits: List known digital spirits<br>
+          - status: Display system status<br>
+          - summon [spirit]: Attempt to summon a specific spirit<br>
+          - clear: Clear terminal output<br>
+          - exit: Close terminal
+        `;
+      } else if (commandLower === 'scan') {
+        activateScanner();
+        response = 'Scanner activated. Searching for nearby digital spirits...';
+      } else if (commandLower === 'spirits') {
+        response = `
+          Known spirits in database:<br>
+          - Cyber Kappa: Data stream dwellers<br>
+          - Neon Tengu: Network guardians<br>
+          - Digital Yūrei: Deleted data ghosts<br>
+          - Electric Kitsune: Electrical manipulators<br>
+          - Glitch Oni: System error demons<br>
+          - Hologram Tanuki: AR/VR tricksters
+        `;
+      } else if (commandLower === 'status') {
+        response = `
+          NEON PHANTASM SYSTEM STATUS<br>
+          ---------------------------<br>
+          Connection: ACTIVE<br>
+          Spirit Detector: ONLINE<br>
+          Containment Protocol: STABLE<br>
+          Quantum Encryption: ENABLED<br>
+          Spiritual Attenuation: 78%<br>
+          Digital Offerings: PENDING<br>
+          System Integrity: NOMINAL
+        `;
+      } else if (commandLower.startsWith('summon')) {
+        const spirit = commandLower.split(' ')[1];
+        if (spirit) {
+          response = `Initiating summoning protocol for ${spirit}... Requires digital ritual completion.`;
+          setTimeout(() => {
+            toggleRitual(true);
+          }, 1000);
+        } else {
+          response = 'Error: Spirit identifier required. Usage: summon [spirit]';
+        }
+      } else if (commandLower === 'clear') {
+        output.innerHTML = '';
+        return;
+      } else if (commandLower === 'exit') {
+        toggleTerminal(false);
+        return;
+      } else {
+        response = `Unknown command: ${command}. Type 'help' for available commands.`;
+      }
+      
+      // Display response
+      const responseElement = document.createElement('p');
+      responseElement.innerHTML = response;
+      output.appendChild(responseElement);
+      
+      // Scroll to bottom
+      output.scrollTop = output.scrollHeight;
+      
+      // Easter eggs
+      if (commandLower === 'hello' || commandLower === 'hi') {
+        setTimeout(() => {
+          const easterEgg = document.createElement('p');
+          easterEgg.innerHTML = '👋 Greetings, digital traveler.';
+          output.appendChild(easterEgg);
+          output.scrollTop = output.scrollHeight;
+          playSound('success');
+        }, 300);
+      }
+      
+      if (command === '42') {
+        setTimeout(() => {
+          const easterEgg = document.createElement('p');
+          easterEgg.innerHTML = 'Yes, that is indeed the answer to the ultimate question of life, the universe, and everything.';
+          output.appendChild(easterEgg);
+          output.scrollTop = output.scrollHeight;
+          playSound('success');
+        }, 300);
+      }
+      
+      // Call this when initializing your terminal
+      addTalkCommand();
+      playSound('type');
+    }
+    
+    // Scanner functionality
+    function activateScanner() {
+      const scanner = document.getElementById('spirit-scanner');
+      scanner.style.opacity = '1';
+      
+      playSound('scan');
+      
+      setTimeout(() => {
+        // Find a random spirit to "detect"
+        const spirits = document.querySelectorAll('[data-spirit]');
+        const randomSpirit = spirits[Math.floor(Math.random() * spirits.length)];
+        const spiritId = randomSpirit.getAttribute('data-spirit');
+        
+        // Show in terminal
+        const output = document.getElementById('terminal-output');
+        const detectionElement = document.createElement('p');
+        detectionElement.innerHTML = `<span style="color: #00f3ff;">DETECTION:</span> ${spiritId} entity detected nearby.`;
+        output.appendChild(detectionElement);
+        output.scrollTop = output.scrollHeight;
+        
+        // Update HUD
+        updateSpiritCount();
+        
+        // Hide scanner
+        setTimeout(() => {
+          scanner.style.opacity = '0';
+        }, 1000);
+        
+        playSound('success');
+      }, 2000);
+    }
+    
+    // Update spirit count in HUD
+    function updateSpiritCount() {
+      const countElement = document.getElementById('spirit-count');
+      const current = parseInt(countElement.textContent.split('/')[0]);
+      const max = parseInt(countElement.textContent.split('/')[1]);
+      
+      if (current < max) {
+        countElement.textContent = `${current + 1}/${max}`;
+      }
+    }
+    
+    // Spirit encyclopedia entry display
+    function showSpiritEntry(spirit) {
+      const entryElement = document.getElementById(`spirit-${spirit}`);
+      if (entryElement) {
+        entryElement.style.display = 'block';
+        playSound('interface');
+      }
+    }
+    
+    function hideSpiritEntry(spirit) {
+      const entryElement = document.getElementById(`spirit-${spirit}`);
+      if (entryElement) {
+        entryElement.style.display = 'none';
+        playSound('interface');
+      }
+    }
+    
+    // Avatar system
+    function toggleAvatarSystem(show = true) {
+      const avatarSystem = document.getElementById('avatar-system');
+      if (show) {
+        avatarSystem.style.display = 'block';
+        document.getElementById('avatar-name').focus();
+        playSound('interface');
+      } else {
+        avatarSystem.style.display = 'none';
+      }
+    }
+    
+    function createUserAvatar() {
+      const name = document.getElementById('avatar-name').value;
+      const type = document.getElementById('avatar-type').value;
+      const affinity = document.getElementById('avatar-affinity').value;
+      
+      if (!name) {
+        alert('Please enter a spirit name');
+        return;
+      }
+      
+      // Update HUD
+      const hudInfo = document.querySelector('.hud-info');
+      const userInfoElement = document.createElement('p');
+      userInfoElement.innerHTML = `AVATAR: <span class="neon-pink-text">${name}</span>`;
+      hudInfo.appendChild(userInfoElement);
+      
+      // Show success in terminal
+      const output = document.getElementById('terminal-output');
+      const successElement = document.createElement('p');
+      successElement.innerHTML = `
+        <span style="color: #ff00c8;">AVATAR CREATED:</span><br>
+        Name: ${name}<br>
+        Type: ${type}<br>
+        Affinity: ${affinity}
+      `;
+      output.appendChild(successElement);
+      output.scrollTop = output.scrollHeight;
+      
+      // Hide avatar system
+      toggleAvatarSystem(false);
+      
+      playSound('success');
+      
+      // Save in localStorage for persistence
+      const avatar = { name, type, affinity };
+      localStorage.setItem('neonPhantasmAvatar', JSON.stringify(avatar));
+    }
+    
+    // Enhanced Digital Ritual
+    function toggleRitual(show = true) {
+      const ritualContainer = document.getElementById('ritual-container');
+      
+      if (show) {
+        ritualContainer.style.display = 'block';
+        resetRitual();
+        
+        // Start ritual animation sequence
+        setTimeout(() => {
+          playSound('ritual');
+          
+          // Fade in background
+          document.querySelector('.ritual-bg').style.opacity = '1';
+          
+          // Animate in UI elements one by one
+          document.querySelector('.ritual-title').style.opacity = '1';
+          document.querySelector('.ritual-title').style.transform = 'translateY(0)';
+          
+          setTimeout(() => {
+            document.querySelector('.ritual-instructions').style.opacity = '1';
+            document.querySelector('.ritual-instructions').style.transform = 'translateY(0)';
+            
+            setTimeout(() => {
+              document.querySelector('.ritual-circle-container').style.opacity = '1';
+              document.querySelector('.ritual-circle-container').style.transform = 'scale(1)';
+              
+              // Show corner decorations
+              document.querySelectorAll('.corner-decoration').forEach(el => {
+                el.style.opacity = '1';
+              });
+              
+              // Show close button
+              document.querySelector('.ritual-close').style.opacity = '1';
+              
+              // Animate rotating rings
+              setTimeout(() => {
+                const outerRing = document.querySelector('.ritual-outer-ring');
+                outerRing.style.opacity = '1';
+                outerRing.style.animation = 'rotateClockwise 60s linear infinite';
+                
+                const outerRing2 = document.querySelector('.ritual-outer-ring-2');
+                outerRing2.style.opacity = '1';
+                outerRing2.style.animation = 'rotateCounterClockwise 45s linear infinite';
+                
+                const outerRing3 = document.querySelector('.ritual-outer-ring-3');
+                outerRing3.style.opacity = '1';
+                outerRing3.style.animation = 'rotateClockwise 30s linear infinite';
+                
+                // Show ritual symbols
+                document.querySelectorAll('.ritual-symbol').forEach((symbol, i) => {
+                  setTimeout(() => {
+                    symbol.style.opacity = '1';
+                  }, i * 100);
+                });
+                
+                // Show status message
+                document.querySelector('.ritual-message').style.opacity = '1';
+                document.querySelector('.ritual-message').style.transform = 'translateY(0)';
+                
+                // Create initial particles
+                startRitualParticles();
+                
+                // Show well effect
+                document.querySelector('.ritual-well').querySelector('::before').style.opacity = '1';
+                
+              }, 500);
+            }, 400);
+          }, 400);
+        }, 100);
+      } else {
+        // Fade out ritual
+        document.querySelector('.ritual-bg').style.opacity = '0';
+        document.querySelector('.ritual-title').style.opacity = '0';
+        document.querySelector('.ritual-instructions').style.opacity = '0';
+        document.querySelector('.ritual-circle-container').style.opacity = '0';
+        document.querySelector('.ritual-message').style.opacity = '0';
+        document.querySelector('.ritual-close').style.opacity = '0';
+        
+        document.querySelectorAll('.corner-decoration').forEach(el => {
+          el.style.opacity = '0';
+        });
+        
+        // Stop ritual music
+        if (sounds.ritual) {
+          sounds.ritual.fade(0.2, 0, 1000);
+        }
+        
+        // Hide container after animation completes
+        setTimeout(() => {
+          ritualContainer.style.display = 'none';
+          if (sounds.ritual) {
+            sounds.ritual.stop();
+          }
+          
+          // Reset ambient music
+          if (sounds.ambient && !sounds.ambient.playing()) {
+            sounds.ambient.play();
+          }
+        }, 1000);
+      }
+    }
+    
+    function resetRitual() {
+      // Reset nodes and sequence
+      currentSequence = [];
+      document.querySelectorAll('.ritual-node').forEach(node => {
+        node.classList.remove('active');
+      });
+      
+      // Reset message
+      document.getElementById('ritual-message').textContent = 'Awaiting activation sequence...';
+      document.getElementById('ritual-message').className = 'ritual-message neon-text';
+      
+      // Clear any existing energy lines
+      const energyLines = document.querySelector('.ritual-energy-lines');
+      energyLines.innerHTML = '';
+      
+      // Reset magic liquid
+      const ritualLiquid = document.querySelector('.ritual-liquid');
+      ritualLiquid.style.height = '0';
+      
+      // Reset portal
+      const ritualPortal = document.querySelector('.ritual-portal');
+      ritualPortal.style.width = '0';
+      ritualPortal.style.height = '0';
+      ritualPortal.style.opacity = '0';
+      
+      // Reset particles
+      const particlesContainer = document.querySelector('.ritual-particles');
+      particlesContainer.innerHTML = '';
+      
+      // Reset rays
+      document.querySelectorAll('.ritual-ray').forEach(ray => {
+        ray.style.opacity = '0';
+      });
+      
+      // Reset spirit
+      const ritualSpirit = document.querySelector('.ritual-spirit');
+      ritualSpirit.style.width = '0';
+      ritualSpirit.style.height = '0';
+      ritualSpirit.style.opacity = '0';
+    }
+    
+    function startRitualParticles() {
+      const particlesContainer = document.querySelector('.ritual-particles');
+      const runeContainer = document.querySelector('.ritual-particles');
+      const runeCharacters = ['⚹', '⚛', '⚝', '⚚', '⚕', '⚙', '⚘', '⚔', '⚒', '⚖', '⚡', '⚶', '⚷'];
+      
+      // Create initial ambient particles
+      for (let i = 0; i < 15; i++) {
+        createRitualParticle();
+      }
+      
+      // Create floating runes periodically
+      setInterval(() => {
+        if (document.querySelector('.ritual-container').style.display !== 'none') {
+          const rune = document.createElement('div');
+          rune.className = 'ritual-rune';
+          rune.textContent = runeCharacters[Math.floor(Math.random() * runeCharacters.length)];
+          
+          // Random position around the well
+          const angle = Math.random() * Math.PI * 2;
+          const distance = 100 + Math.random() * 40;
+          const x = Math.cos(angle) * distance;
+          const y = Math.sin(angle) * distance;
+          
+          // Random travel distance
+          const tx = (Math.random() - 0.5) * 100;
+          const ty = (Math.random() - 0.5) * 100;
+          
+          rune.style.left = `calc(50% + ${x}px)`;
+          rune.style.top = `calc(50% + ${y}px)`;
+          rune.style.setProperty('--tx', `${tx}px`);
+          rune.style.setProperty('--ty', `${ty}px`);
+          
+          // Animation
+          rune.style.animation = `floatRune ${3 + Math.random() * 2}s ease-in-out forwards`;
+          
+          runeContainer.appendChild(rune);
+          
+          // Remove after animation completes
+          setTimeout(() => {
+            rune.remove();
+          }, 5000);
+        }
+      }, 1000);
+      
+      // Continue creating particles
+      setInterval(() => {
+        if (document.querySelector('.ritual-container').style.display !== 'none') {
+          createRitualParticle();
+        }
+      }, 200);
+    }
+    
+    function createRitualParticle() {
+      const particlesContainer = document.querySelector('.ritual-particles');
+      const particle = document.createElement('div');
+      particle.className = 'ritual-particle';
+      
+      // Random position around the well
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 100 + Math.random() * 60;
+      const x = Math.cos(angle) * distance;
+      const y = Math.sin(angle) * distance;
+      
+      // Random travel distance toward center
+      const tx = -x * (0.3 + Math.random() * 0.5);
+      const ty = -y * (0.3 + Math.random() * 0.5);
+      
+      particle.style.left = `calc(50% + ${x}px)`;
+      particle.style.top = `calc(50% + ${y}px)`;
+      particle.style.setProperty('--tx', `${tx}px`);
+      particle.style.setProperty('--ty', `${ty}px`);
+      
+      // Random color
+      const colors = ['var(--neon-cyan)', 'var(--neon-purple)', 'var(--neon-pink)'];
+      particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+      particle.style.boxShadow = `0 0 10px ${colors[Math.floor(Math.random() * colors.length)]}`;
+      
+      // Animation
+      particle.style.animation = `floatParticle ${2 + Math.random() * 3}s ease-in-out forwards`;
+      
+      particlesContainer.appendChild(particle);
+      
+      // Remove after animation completes
+      setTimeout(() => {
+        particle.remove();
+      }, 5000);
+    }
+    
+    // The correct sequence for the ritual
+    const correctSequence = [1, 5, 2, 6, 3, 7, 4, 8]
+       // Track current ritual sequence
+    let currentSequence = [];
+    
+    // Activate ritual node when clicked
+    function activateRitualNode(node) {
+      const nodeNumber = parseInt(node.getAttribute('data-node'));
+      
+      // Don't allow already active nodes
+      if (node.classList.contains('active')) {
+        return;
+      }
+      
+      // Activate the node
+      node.classList.add('active');
+      currentSequence.push(nodeNumber);
+      
+      // Play sound
+      playSound('node');
+      
+      // Create energy line if this isn't the first node
+      if (currentSequence.length > 1) {
+        createEnergyLine(currentSequence[currentSequence.length - 2], nodeNumber);
+      }
+      
+      // Update ritual progress
+      updateRitualProgress();
+      
+      // Check if sequence is correct so far
+      checkRitualSequence();
+    }
+    
+    function createEnergyLine(fromNode, toNode) {
+      const energyLines = document.querySelector('.ritual-energy-lines');
+      const nodes = document.querySelectorAll('.ritual-node');
+      
+      // Get node positions
+      const fromNodeEl = document.querySelector(`.ritual-node[data-node="${fromNode}"]`);
+      const toNodeEl = document.querySelector(`.ritual-node[data-node="${toNode}"]`);
+      
+      if (!fromNodeEl || !toNodeEl) {
+        return;
+      }
+      
+      // Get container dimensions
+      const container = document.querySelector('.ritual-circle-container');
+      const containerRect = container.getBoundingClientRect();
+      
+      // Get node positions relative to container center
+      const fromRect = fromNodeEl.getBoundingClientRect();
+      const toRect = toNodeEl.getBoundingClientRect();
+      
+      const fromX = fromRect.left + fromRect.width / 2 - (containerRect.left + containerRect.width / 2);
+      const fromY = fromRect.top + fromRect.height / 2 - (containerRect.top + containerRect.height / 2);
+      const toX = toRect.left + toRect.width / 2 - (containerRect.left + containerRect.width / 2);
+      const toY = toRect.top + toRect.height / 2 - (containerRect.top + containerRect.height / 2);
+      
+      // Calculate line length and angle
+      const deltaX = toX - fromX;
+      const deltaY = toY - fromY;
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      const angle = Math.atan2(deltaY, deltaX);
+      
+      // Create energy line
+      const line = document.createElement('div');
+      line.className = 'energy-line';
+      line.style.width = `${distance}px`;
+      line.style.transform = `rotate(${angle}rad)`;
+      
+      energyLines.appendChild(line);
+      
+      // Animate line appearing
+      setTimeout(() => {
+        line.style.opacity = '1';
+      }, 10);
+    }
+    
+    function updateRitualProgress() {
+      const messageEl = document.getElementById('ritual-message');
+      const progress = (currentSequence.length / 8) * 100;
+      
+      // Fill the ritual well proportionally
+      const ritualLiquid = document.querySelector('.ritual-liquid');
+      ritualLiquid.style.height = `${progress}%`;
+      
+      // Update message based on progress
+      if (progress < 25) {
+        messageEl.textContent = 'Energies gathering...';
+      } else if (progress < 50) {
+        messageEl.textContent = 'Digital connection forming...';
+      } else if (progress < 75) {
+        messageEl.textContent = 'Spirit resonance detected...';
+      } else if (progress < 100) {
+        messageEl.textContent = 'Summoning portal stabilizing...';
+      }
+    }
+    
+    function checkRitualSequence() {
+      // Check if sequence matches correct sequence so far
+      for (let i = 0; i < currentSequence.length; i++) {
+        if (currentSequence[i] !== correctSequence[i]) {
+          // Sequence is wrong
+          ritualFailure();
+          return;
+        }
+      }
+      
+      // If we reached all 8 nodes and sequence is correct
+      if (currentSequence.length === 8) {
+        ritualSuccess();
+      }
+    }
+    
+    function ritualFailure() {
+      const messageEl = document.getElementById('ritual-message');
+      messageEl.textContent = 'Ritual failed! The sequence was incorrect.';
+      messageEl.className = 'ritual-message neon-pink-text';
+      
+      // Visual effects for failure
+      document.querySelectorAll('.ritual-node').forEach(node => {
+        node.classList.remove('active');
+      });
+      
+      // Clear energy lines with glitching effect
+      const energyLines = document.querySelector('.ritual-energy-lines');
+      const lines = energyLines.querySelectorAll('.energy-line');
+      
+      lines.forEach((line, index) => {
+        // Glitch effect by changing opacity rapidly
+        let glitchCount = 0;
+        const glitchInterval = setInterval(() => {
+          line.style.opacity = glitchCount % 2 === 0 ? '1' : '0.3';
+          glitchCount++;
+          
+          if (glitchCount > 6) {
+            clearInterval(glitchInterval);
+            line.style.opacity = '0';
+            
+            // Remove after fade out
+            setTimeout(() => {
+              line.remove();
+            }, 300);
+          }
+        }, 100);
+      });
+      
+      // Drain the ritual well
+      const ritualLiquid = document.querySelector('.ritual-liquid');
+      ritualLiquid.style.transition = 'height 1s ease-in';
+      ritualLiquid.style.height = '0';
+      
+      // Play failure sound
+      playSound('error');
+      
+      // Reset sequence after a delay
+      setTimeout(() => {
+        currentSequence = [];
+        messageEl.textContent = 'Try again. Awaiting activation sequence...';
+        messageEl.className = 'ritual-message neon-text';
+      }, 3000);
+    }
+    
+    function ritualSuccess() {
+      const messageEl = document.getElementById('ritual-message');
+      messageEl.textContent = 'Ritual complete! Spirit summoned successfully.';
+      messageEl.className = 'ritual-message neon-cyan-text';
+      
+      // Play success sound
+      playSound('success');
+      
+      // Animate portal opening
+      const ritualPortal = document.querySelector('.ritual-portal');
+      ritualPortal.style.width = '200px';
+      ritualPortal.style.height = '200px';
+      ritualPortal.style.opacity = '1';
+      ritualPortal.style.animation = 'portalPulse 2s infinite';
+      
+      // Create light rays
+      document.querySelectorAll('.ritual-ray').forEach((ray, index) => {
+        setTimeout(() => {
+          ray.style.opacity = '0.7';
+        }, index * 50);
+      });
+      
+      // Create spirit manifestation effect
+      setTimeout(() => {
+        const ritualSpirit = document.querySelector('.ritual-spirit');
+        ritualSpirit.style.width = '300px';
+        ritualSpirit.style.height = '300px';
+        ritualSpirit.style.animation = 'spiritManifest 3s forwards';
+        
+        playSound('summon');
+        
+        // Update spirit count in HUD after successful summoning
+        updateSpiritCount();
+        
+        // Add to terminal output
+        const output = document.getElementById('terminal-output');
+        const successElement = document.createElement('p');
+        successElement.innerHTML = `<span style="color: #00f3ff;">RITUAL SUCCESS:</span> Digital spirit successfully manifested in the nexus.`;
+        output.appendChild(successElement);
+        output.scrollTop = output.scrollHeight;
+      }, 1000);
+    }
+    
+    // Sound system
+    let sounds = {};
+    
+    function initializeSoundscape() {
+      sounds = {
+        ambient: new Howl({
+          src: ['https://assets.codepen.io/21542/howler-sfx-ambient2.mp3'],
+          loop: true,
+          volume: 0.2
+        }),
+        interface: new Howl({
+          src: ['https://assets.codepen.io/21542/howler-sfx-interface2.mp3'],
+          volume: 0.5
+        }),
+        success: new Howl({
+          src: ['https://assets.codepen.io/21542/howler-sfx-power-up3.mp3'],
+          volume: 0.5
+        }),
+        error: new Howl({
+          src: ['https://assets.codepen.io/21542/howler-sfx-error.mp3'],
+          volume: 0.5
+        }),
+        type: new Howl({
+          src: ['https://assets.codepen.io/21542/howler-sfx-type.mp3'],
+          volume: 0.2
+        }),
+        scan: new Howl({
+          src: ['https://assets.codepen.io/21542/howler-sfx-scan.mp3'],
+          volume: 0.5
+        }),
+        node: new Howl({
+          src: ['https://assets.codepen.io/21542/howler-sfx-select3.mp3'],
+          volume: 0.4
+        }),
+        ritual: new Howl({
+          src: ['https://assets.codepen.io/21542/howler-music-ritual.mp3'],
+          loop: true,
+          volume: 0.2
+        }),
+        summon: new Howl({
+          src: ['https://assets.codepen.io/21542/howler-sfx-shimmer.mp3'],
+          volume: 0.7
+        })
+      };
+      
+      // Start ambient sound with delay to ensure it doesn't conflict with page loading
+      setTimeout(() => {
+        sounds.ambient.play();
+      }, 2000);
+      
+      // Add mute/unmute functionality
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'm') {
+          toggleMute();
+        }
+      });
+    }
+    
+    function playSound(sound) {
+      if (sounds[sound]) {
+        sounds[sound].play();
+      }
+    }
+    
+    function toggleMute() {
+      if (Howler._muted) {
+        Howler.mute(false);
+      } else {
+        Howler.mute(true);
+      }
+    }
+    
+    // Check for existing avatar on page load
+    function loadSavedAvatar() {
+      const savedAvatar = localStorage.getItem('neonPhantasmAvatar');
+      if (savedAvatar) {
+        const avatar = JSON.parse(savedAvatar);
+        
+        // Update HUD
+        const hudInfo = document.querySelector('.hud-info');
+        const userInfoElement = document.createElement('p');
+        userInfoElement.innerHTML = `AVATAR: <span class="neon-pink-text">${avatar.name}</span>`;
+        hudInfo.appendChild(userInfoElement);
+      }
+    }
+    
+    // Load avatar after page init
+    setTimeout(loadSavedAvatar, 3000);
+  </script>
+</body>
+</html>
